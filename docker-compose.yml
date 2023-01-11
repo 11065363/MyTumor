@@ -1,0 +1,25 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - '1043:80'
+    container_name: wxcloud_mytumor
+    labels:
+      - wxPort=27082
+      - hostPort=1043
+      - wxcloud=mytumor
+      - role=container
+    environment:
+      - MYSQL_USERNAME=
+      - MYSQL_PASSWORD=
+      - MYSQL_ADDRESS=
+networks:
+  default:
+    external:
+      name: wxcb0

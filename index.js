@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const { init: initDB, Counter } = require("./db");
+const { init: initDB, Counter, User } = require("./db");
 
 const logger = morgan("tiny");
 
@@ -43,9 +43,23 @@ app.get("/api/count", async (req, res) => {
   });
 });
 
-// 获取计数
+// 测试
 app.get("/api/test", async (req, res) => {
-  res.send("hello");
+  const { data } = req.body;
+  console.log(data)
+  res.send(data);
+});
+
+app.post("/api/test", async (req, res) => {
+  const data  = req.body;
+  await User.create({username:"sd"});
+  res.send(data.username);
+});
+
+app.post("/api/test2", async (req, res) => {
+  const data  = req.body;
+  await User.update({username:"sd2"},{where:{id:1}});
+  res.send(data.username);
 });
 
 // 小程序调用，获取微信 Open ID

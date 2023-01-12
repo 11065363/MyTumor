@@ -261,7 +261,10 @@
                 </g>
               </g>
             </svg>
-            <span style="margin-left: 4px">视频教程</span></a>
+            <span style="margin-left: 4px" >视频教程</span></a>
+            <button style="margin-left: 4px" onclick="test()">增</button>
+            <button style="margin-left: 4px" onclick="test2()">改</button>
+            <button style="margin-left: 4px" onclick="test3()">删</button>
         </div>
       </div>
     </div>
@@ -292,6 +295,42 @@
     }).done(function (res) {
       if (res && res.data !== undefined) {
         $(".count-number").html(res.data);
+      }
+    });
+  }
+
+  function test(){
+    $.ajax("/api/test", {
+      method: "POST",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      data: JSON.stringify({
+        username: "one",
+        password: "one2",
+        userphone: "one3",
+        userAcount: "one4"
+      }),
+    }).done(function (res) {
+      if (res && res.data !== undefined) {
+        //$(".count-number").html(res.data);
+      }
+    });
+  }
+
+  function test2(){
+    $.ajax("/api/test2", {
+      method: "POST",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      data: JSON.stringify({
+        username: "one",
+        password: "one2",
+        userphone: "one3",
+        userAcount: "one4"
+      }),
+    }).done(function (res) {
+      if (res && res.data !== undefined) {
+        //$(".count-number").html(res.data);
       }
     });
   }

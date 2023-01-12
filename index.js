@@ -46,8 +46,9 @@ app.get("/api/count", async (req, res) => {
 // 测试
 app.get("/api/test", async (req, res) => {
   const { data } = req.body;
-  console.log(data);
-  res.send(data);
+  console.log("data");
+  await User.create({username:"sd"});
+  res.send("data");
 });
 
 app.post("/api/test", async (req, res) => {

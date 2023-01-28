@@ -51,6 +51,13 @@ app.get("/api/test", async (req, res) => {
   res.send("data");
 });
 
+app.get("/api/test2", async (req, res) => {
+  const { data } = req.body;
+  console.log("data");
+  await User.create({username:"sd"});
+  res.send("data");
+});
+
 app.post("/api/test", async (req, res) => {
   const data  = req.body;
   await User.create({username:"sd"});

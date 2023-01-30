@@ -18,6 +18,11 @@ app.get("/", async (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
+app.get("/login", async (req, res) => {
+  //res.send("kk");
+  res.sendFile(path.join(__dirname, "/page/login.html"));
+});
+
 // 更新计数
 app.post("/api/count", async (req, res) => {
   const { action } = req.body;

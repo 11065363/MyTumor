@@ -7,6 +7,13 @@ const { init: initDB, Counter, User } = require("./db");
 const logger = morgan("tiny");
 
 const app = express();
+//引擎
+var handlebars=require('express3-handlebars')
+	.create({defaultLayout:'main'
+    });
+app.engine('handlebars',handlebars.engine);
+app.set('view engine','handlebars');//引擎
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
@@ -25,7 +32,8 @@ app.get("/login", async (req, res) => {
 
 app.get("/projectform", async (req, res) => {
   //res.send("kk");
-  res.sendFile(path.join(__dirname, "/page/projectform.html"));
+  res.render('projectform');
+  //res.sendFile(path.join(__dirname, "/page/projectform.html"));
 });
 
 

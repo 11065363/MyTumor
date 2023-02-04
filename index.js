@@ -301,12 +301,12 @@ app.get("/api/up", async (req, res) => {
 });
 
 function down(req, res) {
-  var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/UML.jpg';
+  //var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/UML.jpg';
   var tmp = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
-  var v= getFile(tmp, '1234.jpg');
+  var v= getFile('UML.jpg', 'a.jpg');
   console.log("IIIIIIIIIIIII**************");
   console.log(v);
-  res.download('1234.jpg');
+  res.download('a.jpg');
   // res.send({
   //   code: 0,
   //   data: "成功",
@@ -317,7 +317,6 @@ function down(req, res) {
 function up(req, res) {
   // var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/UML.jpg';
   // var tmp = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
-  // getFile(tmp, '123.jpg');
   uploadFile('a.jpg', 'a.jpg');
   res.send({
     code: 0,
@@ -443,7 +442,7 @@ function call(obj) {
  * @param {*} filepath 保存本地路径
  */
 async function getFile(cloudpath, filepath) {
-  console.log("kk1");
+  console.log("a1");
   try {
     const res = await this.cos.getObject({
       Bucket: cosConfig.Bucket,
@@ -452,7 +451,7 @@ async function getFile(cloudpath, filepath) {
       Output: path.join('./', filepath)
     })
     console.log(res);
-    console.log("kk");
+    console.log("a2");
     if (res.statusCode === 200) {
       return {
         code: 0,

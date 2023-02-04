@@ -272,7 +272,16 @@ app.post("/api/disease_insert", async (req, res) => {
 
 //测试下载接口
 app.get("/api/download", async (req, res) => {
-  await down(req, res);
+    var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/UML.jpg';
+    var tmp = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
+    var v= getFile(fileid, 'a.jpg');
+    console.log("IIIIIIIIIIIII**************");
+    console.log(v);
+    res.download('a.jpg');
+    // res.send({
+    //   code: 0,
+    //   data: "成功",
+    // });
 
 });
 
@@ -286,10 +295,11 @@ app.get("/api/downpic", async (req, res) => {
   //     res.send('读取错误')
   //   } else {
   //     console.log(data);
-  //     res.send(data)
+  //     res.send(data)//直接返回byte[]
+  
   //   }
 
-
+  //     res.sendFile('C:/Users/lenovo/Pictures/love.jpg');//第二种下载
   // });
   res.download('a.jpg');
 })
@@ -300,18 +310,6 @@ app.get("/api/up", async (req, res) => {
 
 });
 
-function down(req, res) {
-  //var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/UML.jpg';
-  var tmp = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
-  var v= getFile('UML.jpg', 'a.jpg');
-  console.log("IIIIIIIIIIIII**************");
-  console.log(v);
-  res.download('a.jpg');
-  // res.send({
-  //   code: 0,
-  //   data: "成功",
-  // });
-}
 
 //测试上传
 function up(req, res) {

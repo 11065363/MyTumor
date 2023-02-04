@@ -272,32 +272,53 @@ app.post("/api/disease_insert", async (req, res) => {
 
 //测试下载接口
 app.get("/api/download", async (req, res) => {
-  await down(req,res);
+  await down(req, res);
 
 });
+
+//测试下载图片接口
+app.get("/api/downpic", async (req, res) => {
+  //let sort = req.query.sort
+  // let img = req.query.img
+  // let path = `${img}`
+  // const data = fs.readFile(path, function (err, data) {
+  //   if (err) {
+  //     res.send('读取错误')
+  //   } else {
+  //     console.log(data);
+  //     res.send(data)
+  //   }
+
+
+  // });
+  res.download('a.jpg');
+})
 
 //测试上传接口
 app.get("/api/up", async (req, res) => {
-  await up(req,res);
+  await up(req, res);
 
 });
 
-function down(req,res) {
+function down(req, res) {
   var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/UML.jpg';
   var tmp = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
-  getFile(tmp, '123.jpg');
-  res.send({
-    code: 0,
-    data: "成功",
-  });
+  var v= getFile(tmp, '1234.jpg');
+  console.log("IIIIIIIIIIIII**************");
+  console.log(v);
+  res.download('1234.jpg');
+  // res.send({
+  //   code: 0,
+  //   data: "成功",
+  // });
 }
 
 //测试上传
-function up(req,res) {
+function up(req, res) {
   // var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/UML.jpg';
   // var tmp = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
   // getFile(tmp, '123.jpg');
-  uploadFile('a.jpg','a.jpg');
+  uploadFile('a.jpg', 'a.jpg');
   res.send({
     code: 0,
     data: "成功",
@@ -352,7 +373,7 @@ async function initcos() {
  * @param {*} cloudpath 上传的云上路径
  * @param {*} filepath 本地文件路径
  */
- async function uploadFile (cloudpath, filepath) {
+async function uploadFile(cloudpath, filepath) {
   const authres = await call({
     url: 'http://api.weixin.qq.com/_/cos/metaid/encode',
     method: 'POST',

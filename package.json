@@ -10,6 +10,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "cors": "^2.8.5",
+    "cos-nodejs-sdk-v5": "^2.11.19",
     "express": "^4.16.4",
     "express3-handlebars": "^0.5.2",
     "morgan": "^1.10.0",

@@ -1,0 +1,460 @@
+<div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" id="gene" href="#home">基因型</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" id="treate" href="#menu1">治疗线数</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" id="disease" href="#menu2">疾病类型</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#menu3" id="region">地区</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div id="home" class="container tab-pane active" style="margin-left: 0px;"><br>
+            {{!-- <h3>HOME</h3> --}}
+            <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#myModal3">新增基因型</button></h3>
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>基因型</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="mainstring_gene">
+                    {{!-- <tr>
+                        <td>John</td>
+                        <td>Doe</td>
+                        <td>john@example.com</td>
+                    </tr> --}}
+                </tbody>
+            </table>
+        </div>
+        <div id="menu1" class="container tab-pane fade" style="margin-left: 0px;"><br>
+            <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#myModal4">新增治疗线数</button></h3>
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>治疗线数</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="mainstring_treate">
+                    {{!-- <tr>
+                        <td>John</td>
+                        <td>Doe</td>
+                        <td>john@example.com</td>
+                    </tr> --}}
+                </tbody>
+            </table>
+        </div>
+        <div id="menu2" class="container tab-pane fade" style="margin-left: 0px;"><br>
+            <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#myModal5">新增疾病类型</button></h3>
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>疾病类型</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="mainstring_disease">
+                    {{!-- <tr>
+                        <td>John</td>
+                        <td>Doe</td>
+                        <td>john@example.com</td>
+                    </tr> --}}
+                </tbody>
+            </table>
+        </div>
+        <div id="menu3" class="container tab-pane fade" style="margin-left: 0px;"><br>
+            <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#myModal">新增省份</button></h3>
+            <div id="accordion">
+                <div id="mainstring">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--弹出框-->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增地区</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <input class="form-control" id="region_name" placeholder="Enter Region">
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="region_main_sure">确定</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="myModal2">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增子地区</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <input class="form-control" id="region_info_name" placeholder="Enter Region">
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="region_info_sure">确定</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="myModal3">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增基因型</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <input class="form-control" id="gene_name" placeholder="输入基因型">
+                    <input class="form-control" id="gene_message" style="margin-top:10px;" placeholder="输入备注">
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <div class="alert alert-success" style="padding: 10px;display:none;" id="modal3alert">
+                        <strong>成功!</strong>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="gene_sure">确定</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="myModal4">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增基因型</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <input class="form-control" id="treate_name" placeholder="输入治疗线数">
+                    <input class="form-control" id="treate_message" style="margin-top:10px;" placeholder="输入备注">
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <div class="alert alert-success" style="padding: 10px;display:none;" id="modal4alert">
+                        <strong>成功!</strong>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="treate_sure">确定</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="myModal5">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增疾病类型</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <input class="form-control" id="disease_name" placeholder="输入疾病类型">
+                    <input class="form-control" id="disease_message" style="margin-top:10px;" placeholder="输入备注">
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <div class="alert alert-success" style="padding: 10px;display:none;" id="modal5alert">
+                        <strong>成功!</strong>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="disease_sure">确定</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!--脚本部分-->
+    <script>
+        $(document).ready(function () {
+            $('#region').click(function () {
+                $.ajax("/api/region_main", {
+                    method: "get",
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+                        var tmp = "";
+                        for (let i = 0; i < res.data.length; i++) {
+                            tmp += `
+                    <div class="card">
+                    <div class="card-header" style="padding: 0px;">
+                        <div>
+                            <a class="btn regionnameclick" style="padding:6px;" data-bs-toggle="collapse" href="#a`+ res.data[i].regionid + `">
+                                `+ res.data[i].regionname + `<div style="display:none;">` + res.data[i].regionid + `</div>
+                            </a>
+                            <button type="button"  class="btn btn-secondary regionid" data-bs-toggle="modal"
+                    data-bs-target="#myModal2" style="font-size:5px;"  >增加<div style="display:none;">`+ res.data[i].regionid + `</div></button>
+                        </div>
+                    </div>
+                        <div id="a`+ res.data[i].regionid + `" class="collapse " data-bs-parent="#accordion">
+                            
+                        </div>
+                    </div>`;
+                        }
+
+                        $("#mainstring").html(tmp);
+                    }
+                });
+            });
+
+            //点击基因型
+            $('#gene').click(function () {
+                getgene();
+            });
+
+            function getgene() {
+                $.ajax("/api/gene", {
+                    method: "get",
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+                        var tmp = "";
+                        for (let i = 0; i < res.data.length; i++) {
+                            tmp += `
+                            <tr>
+                                <td>`+ res.data[i].id + `</td>
+                                <td>`+ res.data[i].gene_name + `</td>
+                                <td>`+ res.data[i].message + `</td>
+                            </tr>
+                            `;
+                        }
+
+                        $("#mainstring_gene").html(tmp);
+                    }
+                });
+            }
+            getgene();
+            //基因型确定
+            $('#gene_sure').click(function () {
+                var gene_name = $('#gene_name').val();
+                var gene_message = $('#gene_message').val();
+                $.ajax("/api/gene_insert", {
+                    method: "post",
+                    data: { "gene_name": gene_name, "message": gene_message },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        $('#modal3alert').show();
+                        getgene();
+                        setTimeout(function () {
+                            $('#modal3alert').hide();
+                        }, 400);
+                    }
+                });
+            });
+
+            //点击治疗线数
+            $('#treate').click(function () {
+                gettreate();
+            });
+
+            function gettreate() {
+                $.ajax("/api/treate", {
+                    method: "get",
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+                        var tmp = "";
+                        for (let i = 0; i < res.data.length; i++) {
+                            tmp += `
+                            <tr>
+                                <td>`+ res.data[i].id + `</td>
+                                <td>`+ res.data[i].treate_name + `</td>
+                                <td>`+ res.data[i].message + `</td>
+                            </tr>
+                            `;
+                        }
+
+                        $("#mainstring_treate").html(tmp);
+                    }
+                });
+            }
+            gettreate();
+            //治疗线数确定
+            $('#treate_sure').click(function () {
+                var treate_name = $('#treate_name').val();
+                var treate_message = $('#treate_message').val();
+                $.ajax("/api/treate_insert", {
+                    method: "post",
+                    data: { "treate_name": treate_name, "message": treate_message },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        $('#modal4alert').show();
+                        gettreate();
+                        setTimeout(function () {
+                            $('#modal4alert').hide();
+                        }, 400);
+                    }
+                });
+            });
+
+            //点击疾病类型
+            $('#disease').click(function () {
+                getdisease();
+            });
+
+            function getdisease() {
+                $.ajax("/api/disease", {
+                    method: "get",
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+                        var tmp = "";
+                        for (let i = 0; i < res.data.length; i++) {
+                            tmp += `
+                            <tr>
+                                <td>`+ res.data[i].id + `</td>
+                                <td>`+ res.data[i].disease_name + `</td>
+                                <td>`+ res.data[i].message + `</td>
+                            </tr>
+                            `;
+                        }
+
+                        $("#mainstring_disease").html(tmp);
+                    }
+                });
+            }
+            getdisease();
+            //疾病类型确定
+            $('#disease_sure').click(function () {
+                var disease_name = $('#disease_name').val();
+                var disease_message = $('#disease_message').val();
+                $.ajax("/api/disease_insert", {
+                    method: "post",
+                    data: { "disease_name": disease_name, "message": disease_message },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        $('#modal5alert').show();
+                        getdisease();
+                        setTimeout(function () {
+                            $('#modal5alert').hide();
+                        }, 400);
+                    }
+                });
+            });
+
+            //添加地区确定
+            $('#region_main_sure').click(function () {
+                var region_name = $('#region_name').val();
+                console.log(region_name);
+                $.ajax("/api/region_main_insert", {
+                    method: "post",
+                    data: { "regionname": region_name },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+
+                    }
+                });
+            });
+
+            //给地区加子选项
+            $('#region_info_sure').click(function () {
+                var region_name = $('#region_info_name').val();
+                $.ajax("/api/region_info_insert", {
+                    method: "post",
+                    data: { "regionid": global_regionid, "rname": region_name },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+                    }
+                });
+            });
+
+            var global_regionid = "";
+            //点击增加，记录regionid
+            $(document).on("click", ".regionid", function () {
+                global_regionid = this.lastChild.textContent;
+                console.log(global_regionid);
+            });
+
+            $(document).on("click", ".regionnameclick", function () {
+                var tmp = this.childNodes[1].outerText;//得到regionid
+                //var tmp=this.parentNode.parentNode.parentNode;
+                $.ajax("/api/region_info?regionid=" + tmp, {
+                    method: "get",
+                }).done(function (res) {
+                    var content = "";
+                    for (let i = 0; i < res.data.length; i++) {
+                        content += `
+                        <div class="card-body">
+                            `+ res.data[i].rname + `
+                        </div>`
+                    }
+                    //console.log(res.data);
+                    $("#a" + tmp).html(content);
+                });
+
+                //var tmp2= $("#a"+tmp).html();
+                //console.log(tmp2);
+                //alert("Kk");
+            });
+
+        })
+    </script>
+</div>

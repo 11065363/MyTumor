@@ -1,1 +1,258 @@
-<div>1231234</div>
+<div style="margin-top: 10px;">
+
+    <table class="table table-hover table-striped" style=" table-layout: fixed;">
+        <thead class="table-primary">
+            <tr>
+                <th style="display: none;">Id</th>
+                <th>项目名称</th>
+                <th>试验分期</th>
+                <th>药物</th>
+                <th>适应症</th>
+                <th>试验名称</th>
+                <th>拜访科室</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {{#each personInfoList}}
+            <tr>
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;display: none;">{{this.mainid}}
+                </td>
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{this.pro_name}}</td>
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{this.test_stage}}</td>
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{medicine}}</td>
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{indication}}</td>
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{test_name}}</td>
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{Deptname}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    <div style="display: flex;flex-direction:row;justify-content:space-between">
+        <div style="margin-left: 20px;">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">增加</button>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal2" id="_update">修改</button>
+            <button type="button" class="btn btn-danger">删除</button>
+        </div>
+        <ul class="pagination" style="margin-right: 20px;">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item active"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </div>
+    <hr>
+
+</div>
+
+<script>
+    var mainid = 0;
+    $('tbody>tr').click(function () {
+        $(this)
+            .addClass('selected')
+            .siblings().removeClass('selected')
+        mainid = $(this).children().first().text();//给修改使用
+    });
+
+    $('#_update').click(function () {
+        //$('#myModal2').show();
+        alert(mainid);
+    })
+</script>
+<style>
+    .selected {
+        background-color: #5BBFFD;
+    }
+</style>
+<!-- 模态框 -->
+<div class="modal fade  " id="myModal">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <!-- 模态框头部 -->
+            <div class="modal-header" style="background-color: #dddddd;">
+                <h4 class="modal-title">录入项目信息</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- 模态框内容 -->
+            <div class="modal-body">
+                <form action="/api/formdata" method="post">
+                    {{!-- <div class="input-group mb-3">
+                        <span class="input-group-text">项目类别</span>
+                        <input type="text" class="form-control">
+                    </div> --}}
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">项目名称</span>
+                        <input type="text" class="form-control" name="pro_name">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">试验分期</span>
+                        <select class="form-select" id="sel1" name="test_stage">
+                            <option></option>
+                            <option>I期</option>
+                            <option>II期</option>
+                            <option>III期</option>
+                            <option></option>
+                        </select>
+                        <br>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">药物名称</span>
+                        <input type="text" class="form-control" name="medicine">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">适应症</span>
+                        <input type="text" class="form-control" name="indication">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">试验名称</span>
+                        <input type="text" class="form-control" name="test_name">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">拜访科室</span>
+                        <input type="text" class="form-control" name="Deptname">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">报名材料</span>
+                        <input type="text" class="form-control" name="paper">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">药物介绍</span>
+                        <input type="text" class="form-control" name="medicine_introduce">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">试验药组</span>
+                        <input type="text" class="form-control" name="medicine_group">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">对照药组</span>
+                        <input type="text" class="form-control" name="drug_group">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">用药方案</span>
+                        <input type="text" class="form-control" name="medicine_programme">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">简要入排</span>
+                        <textarea class="form-control" rows="5" id="comment" name="briefly_in"></textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">完整入排</span>
+                        <textarea class="form-control" rows="6" id="comment" name="detail_in"></textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">完整排除标准</span>
+                        <textarea class="form-control" rows="6" id="comment" name="detail_out"></textarea>
+                    </div>
+                    <div style="display: flex;flex-direction:row;justify-content:center;">
+                        <button type="submit" class="btn btn-primary tex" style="width: 30%;">提交</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                {{!-- <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">确定</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button> --}}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 模态框修改查看 -->
+<div class="modal fade  " id="myModal2">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <!-- 模态框头部 -->
+            <div class="modal-header" style="background-color: #dddddd;">
+                <h4 class="modal-title">录入项目信息</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- 模态框内容 -->
+            <div class="modal-body">
+                <form action="/api/formdata" method="post">
+                    {{!-- <div class="input-group mb-3">
+                        <span class="input-group-text">项目类别</span>
+                        <input type="text" class="form-control">
+                    </div> --}}
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">项目名称</span>
+                        <input type="text" class="form-control" name="pro_name">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">试验分期</span>
+                        <select class="form-select" id="sel1" name="test_stage">
+                            <option></option>
+                            <option>I期</option>
+                            <option>II期</option>
+                            <option>III期</option>
+                            <option></option>
+                        </select>
+                        <br>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">药物名称</span>
+                        <input type="text" class="form-control" name="medicine">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">适应症</span>
+                        <input type="text" class="form-control" name="indication">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">试验名称</span>
+                        <input type="text" class="form-control" name="test_name">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">拜访科室</span>
+                        <input type="text" class="form-control" name="Deptname">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">报名材料</span>
+                        <input type="text" class="form-control" name="paper">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">药物介绍</span>
+                        <input type="text" class="form-control" name="medicine_introduce">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">试验药组</span>
+                        <input type="text" class="form-control" name="medicine_group">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">对照药组</span>
+                        <input type="text" class="form-control" name="drug_group">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">用药方案</span>
+                        <input type="text" class="form-control" name="medicine_programme">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">简要入排</span>
+                        <textarea class="form-control" rows="5" id="comment" name="briefly_in"></textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">完整入排</span>
+                        <textarea class="form-control" rows="6" id="comment" name="detail_in"></textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">完整排除标准</span>
+                        <textarea class="form-control" rows="6" id="comment" name="detail_out"></textarea>
+                    </div>
+                    <div style="display: flex;flex-direction:row;justify-content:center;">
+                        <button type="submit" class="btn btn-primary tex" style="width: 30%;">提交</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                {{!-- <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">确定</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button> --}}
+            </div>
+
+        </div>
+    </div>
+</div>

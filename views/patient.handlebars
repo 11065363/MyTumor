@@ -1,0 +1,166 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#home">未审核</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#menu1">已审核</a>
+    </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div id="home" class="container tab-pane active" style="margin-left: 0px;"><br>
+        <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#myModal5">新增测试数据</button></h3>
+        <button type="button" class="btn btn-primary" id="testup">测试上传</button>
+        <button type="button" class="btn btn-primary" id="testdown">测试下载</button>
+        <table class="table table-hover table-striped" style=" table-layout: fixed;">
+            <thead class="table-primary">
+                <tr>
+                    <th>项目编号</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>出生日期</th>
+                    <th>项目名称</th>
+                    <th>疾病类型</th>
+                    <th>试验分期</th>
+                </tr>
+            </thead>
+            <tbody id="exam_n">
+                <tr>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="menu1" class="container tab-pane fade" style="margin-left: 0px;"><br>
+        <h3>Menu 1</h3>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </p>
+    </div>
+
+    <!--弹出框-->
+    <div class="modal" id="myModal5">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增测试数据</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <input class="form-control" id="name" placeholder="姓名">
+                    <input class="form-control" id="sex" style="margin-top:10px;" placeholder="性别">
+                    <input class="form-control" id="birth" style="margin-top:10px;" placeholder="出生日期">
+                    <input class="form-control" id="phone" style="margin-top:10px;" placeholder="电话">
+                    <input class="form-control" id="idcard" style="margin-top:10px;" placeholder="身份证号">
+                    <input class="form-control" id="mainid" style="margin-top:10px;" placeholder="项目编号">
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <div class="alert alert-success" style="padding: 10px;display:none;" id="modal5alert">
+                        <strong>成功!</strong>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="disease_sure">确定</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--脚本部分-->
+    <script>
+        $(document).ready(function () {
+            //$('#gene').click(function () {
+            //    getgene();
+            //});
+
+            //获取未审核列表
+            function getpatient_n() {
+                $.ajax("/api/exam_n", {
+                    method: "get",
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+                        var tmp = "";
+                        for (let i = 0; i < res.data.length; i++) {
+                            tmp += `
+                            <tr>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">res.data[i].id</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
+                            </tr>
+                            `;
+                        }
+
+                        $("#exam_n").html(tmp);
+                    }
+                });
+            }
+            //getpatient_n();
+
+            //添加测试数据
+            $('#gene_sure').click(function () {
+                var gene_name = $('#gene_name').val();
+                var gene_message = $('#gene_message').val();
+                $.ajax("/api/gene_insert", {
+                    method: "post",
+                    data: { "gene_name": gene_name, "message": gene_message },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        $('#modal3alert').show();
+                        getgene();
+                        setTimeout(function () {
+                            $('#modal3alert').hide();
+                        }, 400);
+                    }
+                });
+            });
+
+            $('#testup').click(function () {
+                console.log("kkk");
+                cloud.uploadFile({
+                    cloudPath: 'a.jpg', // 对象存储路径，根路径直接填文件名，文件夹例子 test/文件名，不要 / 开头
+                    file: new File(), // 通过 input 或者 new File 获取
+                    config: {
+                        env: 'prod-6go1azha6b1ef67a' // 需要替换成自己的微信云托管环境ID
+                    }
+                    success: res => {
+                        console.log(res.fileID)
+                    },
+                    fail: err => {
+                        console.error(err)
+                    }
+                })
+            })
+
+            //下载数据
+            $('#testdown').click(function () {
+                console.log("kk");
+                $.ajax("/api/download", {
+                    method: "get",
+                    //data: { "gene_name": gene_name, "message": gene_message },
+                }).done(function (res) {
+                    console.log(res);
+                });
+            })
+
+        })
+    </script>
+
+</div>

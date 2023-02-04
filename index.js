@@ -274,7 +274,7 @@ app.post("/api/disease_insert", async (req, res) => {
 app.get("/api/download", async (req, res) => {
     var fileid = '/UML.jpg';
     var tmp = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
-    var v= getFile(fileid, 'a.jpg');
+    var v= await getFile(fileid, 'a.jpg');
     console.log("IIIIIIIIIIIII**************");
     console.log(v);
     res.download('a.jpg');

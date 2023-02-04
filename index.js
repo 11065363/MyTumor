@@ -297,7 +297,7 @@ function up(req,res) {
   // var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/UML.jpg';
   // var tmp = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
   // getFile(tmp, '123.jpg');
-  uploadFile('a.jpg','C:\Users\admin\Desktop\mygit\MyTumor\a.jpg');
+  uploadFile('a.jpg','a.jpg');
   res.send({
     code: 0,
     data: "成功",

@@ -279,8 +279,8 @@ app.get("/api/download", async (req, res) => {
   var tmppath = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
   const lastname = fileid.split(/[\\/]/).pop(); 
   //console.log(lastname);
-  await getFile(tmppath, mypath+'/'+lastname);
-  res.download(mypath+'/'+lastname);
+  await getFile(tmppath, mypath+'\\'+lastname);
+  res.download(mypath+'\\'+lastname);
   // res.send({
   //   code: 0,
   //   data: "成功",
@@ -296,8 +296,8 @@ function getpathname() {
   // var mypath="resource\\img\\"+ year+month+day;
   // return mypath;
   var today = moment();
-  var mypath = "resource/img/" + today.format('YYYYMMDD');
-  var oldpath = "resource/img/" + today.subtract(1, 'days').format('YYYYMMDD');
+  var mypath = "resource\\img\\" + today.format('YYYYMMDD');
+  var oldpath = "resource\\img\\" + today.subtract(1, 'days').format('YYYYMMDD');
   // console.log(oldpath);
   // console.log(mypath);
   deleteDir(oldpath);//删除昨天的图像文件

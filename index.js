@@ -280,8 +280,8 @@ app.get("/api/download", async (req, res) => {
   const lastname = fileid.split(/[\\/]/).pop(); 
   console.log("lastname:"+lastname);
   console.log("mypath"+mypath);
-  await getFile(tmppath, mypath+'/'+lastname);
-  res.download(mypath+'/'+lastname);
+  await getFile(tmppath, mypath+'\\'+lastname);
+  res.download(mypath+'\\'+lastname);
   // res.send({
   //   code: 0,
   //   data: "成功",
@@ -297,8 +297,8 @@ function getpathname() {
   // var mypath="resource\\img\\"+ year+month+day;
   // return mypath;
   var today = moment();
-  var mypath = "resource/img/" + today.format('YYYYMMDD');
-  var oldpath = "resource/img/" + today.subtract(1, 'days').format('YYYYMMDD');
+  var mypath = "resource\\img\\" + today.format('YYYYMMDD');
+  var oldpath = "resource\\img\\" + today.subtract(1, 'days').format('YYYYMMDD');
   // console.log(oldpath);
   // console.log(mypath);
   deleteDir(oldpath);//删除昨天的图像文件

@@ -274,12 +274,12 @@ app.post("/api/disease_insert", async (req, res) => {
 //测试下载接口
 app.get("/api/download", async (req, res) => {
   let fileid = req.query.fileid;
-  var mypath = getpathname(); //创建存图像的文件夹。
+  var mypath = await getpathname(); //创建存图像的文件夹。
   //var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/resource/123.jpg'; //'/UML.jpg';
   var tmppath = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
   const lastname = fileid.split(/[\\/]/).pop(); 
   console.log("lastname:"+lastname);
-  console.log("mypath"+mypath);
+  console.log("mypath:"+mypath);
   await getFile(tmppath, mypath+'\\'+lastname);
   res.download(mypath+'\\'+lastname);
   // res.send({

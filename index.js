@@ -4,6 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const request = require('request');
 const fs = require('fs');
+const moment = require('moment');
 
 const {
   init: initDB,
@@ -272,18 +273,61 @@ app.post("/api/disease_insert", async (req, res) => {
 
 //测试下载接口
 app.get("/api/download", async (req, res) => {
-    var fileid = '/UML.jpg';
-    var tmp = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
-    var v= await getFile(fileid, 'a.jpg');
-    console.log("IIIIIIIIIIIII**************");
-    console.log(v);
-    res.download('a.jpg');
-    // res.send({
-    //   code: 0,
-    //   data: "成功",
-    // });
+  let fileid = req.query.fileid;
+  var mypath = getpathname(); //创建存图像的文件夹。
+  //var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/resource/123.jpg'; //'/UML.jpg';
+  var tmppath = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
+  const lastname = fileid.split(/[\\/]/).pop(); 
+  //console.log(lastname);
+  await getFile(tmppath, lastname);
+  res.download(mypath+'\\'+lastname);
+  // res.send({
+  //   code: 0,
+  //   data: "成功",
+  // });
 
 });
+
+//得到下载图像存放文件夹的地址
+function getpathname() {
+  // var year= new Date().getFullYear();
+  // var month=new Date().getMonth()+1;
+  // var day=new Date().getDay()+1;
+  // var mypath="resource\\img\\"+ year+month+day;
+  // return mypath;
+  var today = moment();
+  var mypath = "resource\\img\\" + today.format('YYYYMMDD');
+  var oldpath = "resource\\img\\" + today.subtract(1, 'days').format('YYYYMMDD');
+  // console.log(oldpath);
+  // console.log(mypath);
+  deleteDir(oldpath);//删除昨天的图像文件
+  if (fs.existsSync(mypath)) {//创建今天的图像文件
+    //console.log("kk");
+  }else{
+    fs.mkdirSync(mypath);
+  }
+  return mypath;
+
+}
+
+function deleteDir(url) {
+  var files = [];
+
+  if (fs.existsSync(url)) { //判断给定的路径是否存在
+    files = fs.readdirSync(url); //返回文件和子目录的数组
+    files.forEach(function (file, index) {
+      var curPath = path.join(url, file);
+      if (fs.statSync(curPath).isDirectory()) { //同步读取文件夹文件，如果是文件夹，则函数回调
+        deleteDir(curPath);
+      } else {
+        fs.unlinkSync(curPath); //是指定文件，则删除
+      }
+    });
+    fs.rmdirSync(url); //清除文件夹
+  } else {
+    console.log("给定的路径不存在！");
+  }
+}
 
 //测试下载图片接口
 app.get("/api/downpic", async (req, res) => {
@@ -296,7 +340,7 @@ app.get("/api/downpic", async (req, res) => {
   //   } else {
   //     console.log(data);
   //     res.send(data)//直接返回byte[]
-  
+
   //   }
 
   //     res.sendFile('C:/Users/lenovo/Pictures/love.jpg');//第二种下载

@@ -99,11 +99,20 @@ const Promain = sequelize.define("Promain", {
   gene_id: {
     type: DataTypes.STRING,
   },
-  trate_id: {
+  treate_id: {
     type: DataTypes.STRING,
   },
-  diease_id: {
-    type: DataTypes.STRING,
+  disease_id: {
+    type: DataTypes.INTEGER,
+  },
+  disease_info_id: {
+    type: DataTypes.INTEGER,
+  },
+  region_id: {
+    type: DataTypes.INTEGER,
+  },
+  region_info_id: {
+    type: DataTypes.INTEGER,
   },
 },{
   //timestamps: false, // 不要默认时间戳 数据库没有时间戳字段时，设置为false，否则报错  SequelizeDatabaseError: Unknown column 'createdAt' in 'field list'
@@ -134,6 +143,23 @@ const region_info = sequelize.define("region_info", {
     type:DataTypes.INTEGER,
   },
   rname: {
+    type: DataTypes.STRING,
+  },
+},{
+  //timestamps: false, // 不要默认时间戳 数据库没有时间戳字段时，设置为false，否则报错  SequelizeDatabaseError: Unknown column 'createdAt' in 'field list'
+  freezeTableName: true 
+});
+
+// 定义数据模型Disease_info
+const Disease_info = sequelize.define("Disease_info", {
+  id:{
+    type:DataTypes.INTEGER,
+    primaryKey:true
+  },
+  diseaseid:{
+    type:DataTypes.INTEGER,
+  },
+  dname: {
     type: DataTypes.STRING,
   },
 },{
@@ -208,5 +234,6 @@ module.exports = {
   region_info,
   gene,
   treatment_require,
-  Disease
+  Disease,
+  Disease_info
 };

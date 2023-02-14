@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const request = require('request');
 const fs = require('fs');
 const moment = require('moment');
+var session = require('express-session');
 
 const {
   init: initDB,
@@ -15,7 +16,8 @@ const {
   region_info,
   gene,
   treatment_require,
-  Disease
+  Disease,
+  Disease_info
 } = require("./db");
 const {
   download
@@ -44,42 +46,95 @@ app.use(express.json());
 app.use(cors());
 app.use(logger);
 
+
+// 使用 session 中间件
+app.use(session({
+  secret: 'secret', // 对session id 相关的cookie 进行签名
+  resave: true,
+  saveUninitialized: false, // 是否保存未初始化的会话
+  cookie: {
+    maxAge: 1000 * 6000 * 3, // 设置 session 的有效时间，单位毫秒
+  },
+}));
+
+// //如果是wxapi不校验是否登录，如果是网页需要校验是否登录。
+// app.use(function (req, res, next) {
+//   let tmp = req.url.slice(0, 6);
+//   if (tmp == "/wxapi") {
+//     next();
+//   } else {
+//     console.log(req.session.userName)
+//     if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
+//        res.sendFile(path.join(__dirname, "index.html"));
+//     } else {
+//       res.sendFile(path.join(__dirname, "/page/login.html"));
+//       //res.redirect('login');
+//     }
+//   }
+//   //res.redirect('login');
+//   //next();
+// });
+
 // 首页
 app.get("/", async (req, res) => {
-  //res.send("kk");
-  res.sendFile(path.join(__dirname, "index.html"));
+  if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
+    //res.sendFile(path.join(__dirname, "index.html"));
+    res.sendFile(path.join(__dirname, "/page/login.html"));
+  } else {
+    res.redirect('login');
+  }
 });
 
 app.get("/login", async (req, res) => {
-  //res.send("kk");
   res.sendFile(path.join(__dirname, "/page/login.html"));
+});
+
+app.post("/login", async (req, res) => {
+  if (req.body.username == 'admin' && req.body.pwd == 'admin123') {
+    req.session.userName = req.body.username; // 登录成功，设置 session
+    console.log(session.userName)
+    res.redirect('/projectform');
+  } else {
+    res.json({
+      ret_code: 1,
+      ret_msg: '账号或密码错误'
+    }); // 若登录失败，重定向到登录页面
+  }
 });
 
 //项目表单
 app.get("/projectform", async (req, res) => {
-  const personInfoList = await Promain.findAll({
-    limit: 10
-  });
-  console.log(personInfoList);
+  if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
+    const personInfoList = await Promain.findAll({
+      limit: 10
+    });
+    res.render('projectform', {
+      personInfoList: personInfoList
+    })
+  } else {
+    res.redirect('login');
+  }
 
-  res.render('projectform', {
-    personInfoList: personInfoList
-  })
 });
 
-//项目表单
+//患者表单
 app.get("/patient", async (req, res) => {
-  //const personInfoList = await Promain.findAll({ limit: 10 });
-  //console.log(personInfoList);
-
-  res.render('patient')
+  if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
+    res.render('patient')
+  } else {
+    res.redirect('login');
+  }
 });
 
 //字典管理
 app.get("/dictionary", async (req, res) => {
-  res.render('dictionary', {
-    //personInfoList: personInfoList
-  })
+  if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
+    res.render('dictionary', {
+      //personInfoList: personInfoList
+    })
+  } else {
+    res.redirect('login');
+  }
 });
 
 // 提交数据
@@ -170,6 +225,20 @@ app.get("/api/wx_openid", async (req, res) => {
 });
 
 //API部分
+//获取项目列表
+app.get("/api/projectlist", async (req, res) => {
+  let mainid = req.query.mainid;
+  const result = await Promain.findAll({
+    where: {
+      mainid: mainid
+    }
+  });
+  res.send({
+    code: 0,
+    data: result,
+  });
+});
+
 // 获取地区字典表主表
 app.get("/api/region_main", async (req, res) => {
   const result = await region_main.findAll();;
@@ -208,6 +277,49 @@ app.get("/api/region_info", async (req, res) => {
 app.post("/api/region_info_insert", async (req, res) => {
   console.log(req.body);
   await region_info.create(req.body);
+  res.send({
+    code: 0,
+    //data: await Counter.count(),
+  });
+});
+
+// 获取疾病2字典表主表
+app.get("/api/disease_main", async (req, res) => {
+  const result = await Disease.findAll();;
+  res.send({
+    code: 0,
+    data: result,
+  });
+});
+
+// 疾病2字典表主表增加
+app.post("/api/disease_main_insert", async (req, res) => {
+  console.log(req.body);
+  await Disease.create(req.body);
+  res.send({
+    code: 0,
+    //data: await Counter.count(),
+  });
+});
+
+// 疾病2字典表info表
+app.get("/api/disease_info", async (req, res) => {
+  let diseaseid = req.query.diseaseid;
+  const result = await Disease_info.findAll({
+    where: {
+      diseaseid: diseaseid
+    }
+  });
+  res.send({
+    code: 0,
+    data: result,
+  });
+});
+
+// 疾病2字典表info表增加
+app.post("/api/disease_info_insert", async (req, res) => {
+  console.log(req.body);
+  await Disease_info.create(req.body);
   res.send({
     code: 0,
     //data: await Counter.count(),
@@ -254,7 +366,7 @@ app.post("/api/treate_insert", async (req, res) => {
 
 // 获取疾病字典表
 app.get("/api/disease", async (req, res) => {
-  const result = await Disease.findAll();;
+  const result = await Disease.findAll();
   res.send({
     code: 0,
     data: result,
@@ -277,11 +389,11 @@ app.get("/api/download", async (req, res) => {
   var mypath = await getpathname(); //创建存图像的文件夹。
   //var fileid = 'cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/resource/123.jpg'; //'/UML.jpg';
   var tmppath = fileid.replace(/cloud:\/\/.{6,}.[0-9]*-.{6,}-[0-9]*\//, '/') // 将fileid处理一下，COS-SDK只需要目录
-  const lastname = fileid.split(/[\\/]/).pop(); 
-  console.log("lastname:"+lastname);
-  console.log("mypath:"+mypath);
-  await getFile(tmppath, mypath+'\\'+lastname);
-  res.download(mypath+'\\'+lastname);
+  const lastname = fileid.split(/[\\/]/).pop();
+  // console.log("lastname:"+lastname);
+  // console.log("mypath:"+mypath);
+  await getFile(tmppath, mypath + '\\' + lastname);
+  res.download(mypath + '\\' + lastname);
   // res.send({
   //   code: 0,
   //   data: "成功",
@@ -291,24 +403,18 @@ app.get("/api/download", async (req, res) => {
 
 //得到下载图像存放文件夹的地址
 function getpathname() {
-  // var year= new Date().getFullYear();
-  // var month=new Date().getMonth()+1;
-  // var day=new Date().getDay()+1;
-  // var mypath="resource\\img\\"+ year+month+day;
-  // return mypath;
   var today = moment();
   var mypath = "resource\\img\\" + today.format('YYYYMMDD');
   var oldpath = "resource\\img\\" + today.subtract(1, 'days').format('YYYYMMDD');
   // console.log(oldpath);
   // console.log(mypath);
-  deleteDir(oldpath);//删除昨天的图像文件
-  if (fs.existsSync(mypath)) {//创建今天的图像文件
-    //console.log("kk");
-  }else{
+  deleteDir(oldpath); //删除昨天的图像文件
+  if (fs.existsSync(mypath)) { //创建今天的图像文件
+    console.log("删除掉昨天的文件夹");
+  } else {
     fs.mkdirSync(mypath);
   }
   return mypath;
-
 }
 
 function deleteDir(url) {

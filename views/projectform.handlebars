@@ -31,7 +31,8 @@
     <div style="display: flex;flex-direction:row;justify-content:space-between">
         <div style="margin-left: 20px;">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">增加</button>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal2" id="_update">修改</button>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal2"
+                id="_update">修改</button>
             <button type="button" class="btn btn-danger">删除</button>
         </div>
         <ul class="pagination" style="margin-right: 20px;">
@@ -45,7 +46,12 @@
     <hr>
 
 </div>
+<script>
+    $(document).ready(function () {
 
+    })
+
+</script>
 <script>
     var mainid = 0;
     $('tbody>tr').click(function () {
@@ -55,10 +61,255 @@
         mainid = $(this).children().first().text();//给修改使用
     });
 
+    //修改
     $('#_update').click(function () {
         //$('#myModal2').show();
         alert(mainid);
+        var _form = $('#form3');
+        $.ajax("/api/projectlist?mainid=" + mainid, {
+            method: "get",
+        }).done(function (res) {
+            if (res && res.data !== undefined) {
+                console.log(res.data);
+                //
+                _form.find('input[name="pro_name"]').val("_id");
+                getregion(res.data[0].region_id);//设置地区
+                getregioninfo(res.data[0].region_id, res.data[0].region_info_id);//设置子地区
+                getgene(res.data[0].gene_id);//设置基因型
+                gettreate(res.data[0].treate_id);//设置治疗线数
+                getdisease(res.data[0].disease_id);//设置疾病
+                getdiseaseinfo(res.data[0].disease_id, res.data[0].disease_info_id);//设置子疾病
+            }
+        })
+        
     })
+
+    //设置地区列表
+    function getregion(region_id) {
+        var str = "";
+        var _form = $('#form3');
+        $.ajax("/api/region_main", {
+            method: "get",
+        }).done(function (res) {
+            if (res && res.data !== undefined) {
+                for (var i = 0; i < res.data.length; i++) {
+                    str += `<option class="regionvalue" value="` + res.data[i].regionid + `">` + res.data[i].regionname + `</option>`;
+                }
+                $('#form2getregion').html(str);// = str;
+                if (region_id != null) {
+                    $("#form2getregion").val(region_id)
+                }
+            }
+        })
+    }
+    //设置子地区列表
+    function getregioninfo(region_id, region_info_id) {
+        if (region_id == null) return;
+        var str = "";
+        var _form = $('#form3');
+        $.ajax("/api/region_info?regionid=" + region_id, {
+            method: "get",
+        }).done(function (res) {
+            //console.log(res.data)
+            if (res && res.data !== undefined) {
+                for (var i = 0; i < res.data.length; i++) {
+                    str += `<option class="" value="` + res.data[i].rid + `">` + res.data[i].rname + `</option>`;
+                }
+                $('.form2regioninfoclick').html(str);
+                if (region_info_id != null) {
+                    $(".form2regioninfoclick").val(region_info_id)
+                }
+
+                // console.log()
+
+                console.log("dd")
+            }
+        })
+    }
+     //设置基因型
+    function getgene(gene_id) {
+        var str = "";
+        var _form = $('#form3');
+        $.ajax("/api/gene", {
+            method: "get",
+        }).done(function (res) {
+            if (res && res.data !== undefined) {
+                //console.log(res.data)
+                for (var i = 0; i < res.data.length; i++) {
+                    str += `<option class="" value="` + res.data[i].id + `">` + res.data[i].gene_name + `</option>`;
+                }
+                $('.form2getgene').html(str);// = str;
+                if (gene_id != null) {
+                    $(".form2getgene").val(gene_id)
+                }
+            }
+        })
+    }
+     //设置治疗线数
+    function gettreate(treate_id) {
+        var str = "";
+        var _form = $('#form3');
+        $.ajax("/api/treate", {
+            method: "get",
+        }).done(function (res) {
+            console.log(res.data)
+            if (res && res.data !== undefined) {
+                for (var i = 0; i < res.data.length; i++) {
+                    str +=`<option class="" value="` + res.data[i].id + `">` + res.data[i].treate_name + `</option>`;
+                }
+                $('.form2gettreate').html(str);// = str;
+                if (treate_id != null) {
+                    $(".form2gettreate").val(treate_id)
+                }
+            }
+        })
+    }
+     //设置疾病列表
+    function getdisease(disease_id) {
+        var str = "";
+        var _form = $('#form3');
+        $.ajax("/api/disease_main", {
+            method: "get",
+        }).done(function (res) {
+            if (res && res.data !== undefined) {
+                for (var i = 0; i < res.data.length; i++) {
+                    str += `<option class="" value="` + res.data[i].id + `">` + res.data[i].disease_name + `</option>`;
+                }
+                $('#form2gedisease').html(str);// = str;
+                if (disease_id != null) {
+                    $("#form2gedisease").val(disease_id)
+                }
+            }
+        })
+    }
+    //设置子疾病列表
+    function getdiseaseinfo(disease_id, disease_info_id) {
+        if (disease_id == null) return;
+        var str = "";
+        var _form = $('#form3');
+        $.ajax("/api/disease_info?diseaseid=" + disease_id, {
+            method: "get",
+        }).done(function (res) {
+            //console.log(res.data)
+            if (res && res.data !== undefined) {
+                console.log(res.data)
+                for (var i = 0; i < res.data.length; i++) {
+                    str += `<option class="" value="` + res.data[i].id + `">` + res.data[i].dname + `</option>`;
+                }
+                $('.form2diseaseinfoclick').html(str);
+                if (disease_info_id != null) {
+                    $(".form2diseaseinfoclick").val(disease_info_id)
+                }
+
+                // console.log()
+
+                console.log("dd")
+            }
+        })
+    }
+
+
+    var time_region = 0;
+    //点击地区的select，获取地区列表
+    $(document).on("click", ".regionclick", function () {
+        var str = "";
+        var that = this;
+        if (time_region == 0) {
+            $.ajax("/api/region_main", {
+                method: "get",
+            }).done(function (res) {
+                if (res && res.data !== undefined) {
+                    for (var i = 0; i < res.data.length; i++) {
+                        str += `<option class="regionvalue" value="` + res.data[i].regionid + `">` + res.data[i].regionname + `</option>`;
+                    }
+                    that.innerHTML = str;
+                }
+            })
+            time_region += 1;
+        }
+        var select_regionid = $('.regionclick').val();
+        //console.log(select_regionid)
+        $.ajax("/api/region_info?regionid=" + select_regionid, {
+            method: "get",
+        }).done(function (res) {
+            var content = "";
+            for (let i = 0; i < res.data.length; i++) {
+                content += `<option class="" value="` + res.data[i].rid + `">` + res.data[i].rname + `</option>`;
+            }
+            console.log(content);
+            $('.regioninfoclick').html(content)
+        });
+
+    })
+    var time_gene = 0;
+    $(document).on("click", ".geneclick", function () {
+        str = "";
+        var that = this;
+        if (time_gene == 0) {
+            $.ajax("/api/gene", {
+                method: "get",
+            }).done(function (res) {
+                if (res && res.data !== undefined) {
+                    for (var i = 0; i < res.data.length; i++) {
+                        str += `<option class="" value="` + res.data[i].id + `">` + res.data[i].gene_name + `</option>`;
+                    }
+                    that.innerHTML = str;
+                }
+            })
+            time_gene += 1;
+        }
+    })
+    var time_treate = 0;
+    $(document).on("click", ".treatclick", function () {
+        str = "";
+        var that = this;
+        if (time_treate == 0) {
+            $.ajax("/api/treate", {
+                method: "get",
+            }).done(function (res) {
+                if (res && res.data !== undefined) {
+                    for (var i = 0; i < res.data.length; i++) {
+                        str += `<option class="" value="` + res.data[i].id + `">` + res.data[i].treate_name + `</option>`;
+                    }
+                    that.innerHTML = str;
+                }
+            })
+            time_treate += 1;
+        }
+    })
+    var time_disease = 0;
+    //点击地区的select，获取地区列表
+    $(document).on("click", ".diseaseclick", function () {
+        str = "";
+        var that = this;
+        if (time_disease == 0) {
+            $.ajax("/api/disease_main", {
+                method: "get",
+            }).done(function (res) {
+                if (res && res.data !== undefined) {
+                    for (var i = 0; i < res.data.length; i++) {
+                        str += `<option class="diseasevalue" value="` + res.data[i].id + `">` + res.data[i].disease_name + `</option>`;
+                    }
+                    that.innerHTML = str;
+                }
+            })
+            time_disease += 1;
+        }
+        var select_diseaseid = $('.diseaseclick').val();
+        //console.log(select_regionid)
+        $.ajax("/api/disease_info?diseaseid=" + select_diseaseid, {
+            method: "get",
+        }).done(function (res) {
+            var content = "";
+            for (let i = 0; i < res.data.length; i++) {
+                content += `<option class="" value="` + res.data[i].id + `">` + res.data[i].dname + `</option>`;
+            }
+            console.log(content);
+            $('.diseaseinfoclick').html(content)
+        });
+
+    })
+
 </script>
 <style>
     .selected {
@@ -77,73 +328,371 @@
 
             <!-- 模态框内容 -->
             <div class="modal-body">
-                <form action="/api/formdata" method="post">
+                <form action="/api/formdata" method="post" class="was-validated">
                     {{!-- <div class="input-group mb-3">
-                        <span class="input-group-text">项目类别</span>
+                        <span class="input-group-text" style="width:120px;">项目类别</span>
                         <input type="text" class="form-control">
                     </div> --}}
                     <div class="input-group mb-3">
-                        <span class="input-group-text">项目名称</span>
-                        <input type="text" class="form-control" name="pro_name">
+                        <span class="input-group-text" style="width:120px;">项目名称</span>
+                        <input type="text" class="form-control" name="pro_name" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">试验分期</span>
-                        <select class="form-select" id="sel1" name="test_stage">
+                        <span class="input-group-text" style="width:120px;">地区</span>
+                        <select class="form-select regionclick" name="region_id" required>
                             <option></option>
-                            <option>I期</option>
-                            <option>II期</option>
-                            <option>III期</option>
                             <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+
+                        </select>
+                        <span class="input-group-text" style="width:120px;">子地区</span>
+                        <select class="form-select regioninfoclick" name="region_info_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">基因型</span>
+                        <select class="form-select geneclick" name="gene_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                        </select>
+                        <span class="input-group-text" style="width:120px;">治疗线数</span>
+                        <select class="form-select treatclick" name="treate_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">试验分期</span>
+                        <select class="form-select" id="sel1" name="test_stage" required>
+                            <option value="1">I期</option>
+                            <option  value="2">II期</option>
+                            <option  value="3">III期</option>
+                            <option  value="4">IV期</option>
                         </select>
                         <br>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">药物名称</span>
-                        <input type="text" class="form-control" name="medicine">
+                        <span class="input-group-text" style="width:120px;">疾病类型</span>
+                        <select class="form-select diseaseclick" name="disease_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+
+                        </select>
+                        <span class="input-group-text" style="width:120px;">子类型</span>
+                        <select class="form-select diseaseinfoclick" name="disease_info_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                        </select>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">适应症</span>
-                        <input type="text" class="form-control" name="indication">
+                        <span class="input-group-text" style="width:120px;">药物名称</span>
+                        <input type="text" class="form-control" name="medicine" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">试验名称</span>
-                        <input type="text" class="form-control" name="test_name">
+                        <span class="input-group-text" style="width:120px;">适应症</span>
+                        <input type="text" class="form-control" name="indication" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">拜访科室</span>
-                        <input type="text" class="form-control" name="Deptname">
+                        <span class="input-group-text" style="width:120px;">试验名称</span>
+                        <input type="text" class="form-control" name="test_name" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">报名材料</span>
-                        <input type="text" class="form-control" name="paper">
+                        <span class="input-group-text" style="width:120px;">拜访科室</span>
+                        <input type="text" class="form-control" name="Deptname" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">药物介绍</span>
-                        <input type="text" class="form-control" name="medicine_introduce">
+                        <span class="input-group-text" style="width:120px;">报名材料</span>
+                        <input type="text" class="form-control" name="paper" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">试验药组</span>
-                        <input type="text" class="form-control" name="medicine_group">
+                        <span class="input-group-text" style="width:120px;">药物介绍</span>
+                        <input type="text" class="form-control" name="medicine_introduce" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">对照药组</span>
-                        <input type="text" class="form-control" name="drug_group">
+                        <span class="input-group-text" style="width:120px;">试验药组</span>
+                        <input type="text" class="form-control" name="medicine_group" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">用药方案</span>
-                        <input type="text" class="form-control" name="medicine_programme">
+                        <span class="input-group-text" style="width:120px;">对照药组</span>
+                        <input type="text" class="form-control" name="drug_group" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">简要入排</span>
-                        <textarea class="form-control" rows="5" id="comment" name="briefly_in"></textarea>
+                        <span class="input-group-text" style="width:120px;">用药方案</span>
+                        <input type="text" class="form-control" name="medicine_programme" required>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">完整入排</span>
-                        <textarea class="form-control" rows="6" id="comment" name="detail_in"></textarea>
+                        <span class="input-group-text" style="width:120px;">简要入排</span>
+                        <textarea class="form-control" rows="5" id="comment" name="briefly_in" required></textarea>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">完整排除标准</span>
-                        <textarea class="form-control" rows="6" id="comment" name="detail_out"></textarea>
+                        <span class="input-group-text" style="width:120px;">完整入排</span>
+                        <textarea class="form-control" rows="6" id="comment" name="detail_in" required></textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">完整排除标准</span>
+                        <textarea class="form-control" rows="6" id="comment" name="detail_out" required></textarea>
+                    </div>
+                    <div style="display: flex;flex-direction:row;justify-content:center;">
+                        <button type="submit" class="btn btn-primary tex" style="width: 30%;">提交</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                {{!-- <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">确定</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button> --}}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 模态框 -->
+<div class="modal fade  " id="myModal2">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <!-- 模态框头部 -->
+            <div class="modal-header" style="background-color: #dddddd;">
+                <h4 class="modal-title">修改项目信息</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- 模态框内容 -->
+            <div class="modal-body">
+                <form action="/api/formdata" method="post" id="form3" class="was-validated">
+                    {{!-- <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">项目类别</span>
+                        <input type="text" class="form-control">
+                    </div> --}}
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">项目名称</span>
+                        <input type="text" class="form-control" name="pro_name" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">地区</span>
+                        <select class="form-select " id="form2getregion" name="region_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+
+                        </select>
+                        <span class="input-group-text" style="width:120px;">子地区</span>
+                        <select class="form-select form2regioninfoclick" name="region_info_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">基因型</span>
+                        <select class="form-select form2getgene " name="gene_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                        </select>
+                        <span class="input-group-text" style="width:120px;">治疗线数</span>
+                        <select class="form-select  form2gettreate" name="treate_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">试验分期</span>
+                        <select class="form-select" id="sel1" name="test_stage" required>
+                            
+                            <option value="1">I期</option>
+                            <option  value="2">II期</option>
+                            <option  value="3">III期</option>
+                            <option  value="4">IV期</option>
+                            
+                        </select>
+                        <br>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">疾病类型</span>
+                        <select class="form-select " id="form2gedisease" name="disease_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+
+                        </select>
+                        <span class="input-group-text" style="width:120px;">子类型</span>
+                        <select class="form-select form2diseaseinfoclick" name="disease_info_id" required>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">药物名称</span>
+                        <input type="text" class="form-control" name="medicine" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">适应症</span>
+                        <input type="text" class="form-control" name="indication" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">试验名称</span>
+                        <input type="text" class="form-control" name="test_name" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">拜访科室</span>
+                        <input type="text" class="form-control" name="Deptname" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">报名材料</span>
+                        <input type="text" class="form-control" name="paper" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">药物介绍</span>
+                        <input type="text" class="form-control" name="medicine_introduce" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">试验药组</span>
+                        <input type="text" class="form-control" name="medicine_group" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">对照药组</span>
+                        <input type="text" class="form-control" name="drug_group" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">用药方案</span>
+                        <input type="text" class="form-control" name="medicine_programme" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">简要入排</span>
+                        <textarea class="form-control" rows="5" id="comment" name="briefly_in" required></textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">完整入排</span>
+                        <textarea class="form-control" rows="6" id="comment" name="detail_in" required></textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width:120px;">完整排除标准</span>
+                        <textarea class="form-control" rows="6" id="comment" name="detail_out" required></textarea>
                     </div>
                     <div style="display: flex;flex-direction:row;justify-content:center;">
                         <button type="submit" class="btn btn-primary tex" style="width: 30%;">提交</button>
@@ -162,7 +711,7 @@
 </div>
 
 <!-- 模态框修改查看 -->
-<div class="modal fade  " id="myModal2">
+<div class="modal fade  " id="myModal_">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <!-- 模态框头部 -->
@@ -173,17 +722,17 @@
 
             <!-- 模态框内容 -->
             <div class="modal-body">
-                <form action="/api/formdata" method="post">
+                <form action="/api/formdata" id="from2" method="post">
                     {{!-- <div class="input-group mb-3">
-                        <span class="input-group-text">项目类别</span>
+                        <span class="input-group-text" style="width:120px;">项目类别</span>
                         <input type="text" class="form-control">
                     </div> --}}
                     <div class="input-group mb-3">
-                        <span class="input-group-text">项目名称</span>
+                        <span class="input-group-text" style="width:120px;">项目名称</span>
                         <input type="text" class="form-control" name="pro_name">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">试验分期</span>
+                        <span class="input-group-text" style="width:120px;">试验分期</span>
                         <select class="form-select" id="sel1" name="test_stage">
                             <option></option>
                             <option>I期</option>
@@ -194,51 +743,51 @@
                         <br>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">药物名称</span>
+                        <span class="input-group-text" style="width:120px;">药物名称</span>
                         <input type="text" class="form-control" name="medicine">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">适应症</span>
+                        <span class="input-group-text" style="width:120px;">适应症</span>
                         <input type="text" class="form-control" name="indication">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">试验名称</span>
+                        <span class="input-group-text" style="width:120px;">试验名称</span>
                         <input type="text" class="form-control" name="test_name">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">拜访科室</span>
+                        <span class="input-group-text" style="width:120px;">拜访科室</span>
                         <input type="text" class="form-control" name="Deptname">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">报名材料</span>
+                        <span class="input-group-text" style="width:120px;">报名材料</span>
                         <input type="text" class="form-control" name="paper">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">药物介绍</span>
+                        <span class="input-group-text" style="width:120px;">药物介绍</span>
                         <input type="text" class="form-control" name="medicine_introduce">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">试验药组</span>
+                        <span class="input-group-text" style="width:120px;">试验药组</span>
                         <input type="text" class="form-control" name="medicine_group">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">对照药组</span>
+                        <span class="input-group-text" style="width:120px;">对照药组</span>
                         <input type="text" class="form-control" name="drug_group">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">用药方案</span>
+                        <span class="input-group-text" style="width:120px;">用药方案</span>
                         <input type="text" class="form-control" name="medicine_programme">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">简要入排</span>
+                        <span class="input-group-text" style="width:120px;">简要入排</span>
                         <textarea class="form-control" rows="5" id="comment" name="briefly_in"></textarea>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">完整入排</span>
+                        <span class="input-group-text" style="width:120px;">完整入排</span>
                         <textarea class="form-control" rows="6" id="comment" name="detail_in"></textarea>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">完整排除标准</span>
+                        <span class="input-group-text" style="width:120px;">完整排除标准</span>
                         <textarea class="form-control" rows="6" id="comment" name="detail_out"></textarea>
                     </div>
                     <div style="display: flex;flex-direction:row;justify-content:center;">

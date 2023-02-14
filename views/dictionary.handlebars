@@ -8,7 +8,10 @@
             <a class="nav-link" data-bs-toggle="tab" id="treate" href="#menu1">治疗线数</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" id="disease" href="#menu2">疾病类型</a>
+            <a class="nav-link" data-bs-toggle="tab" id="disease" href="#menu2">疾病类型表</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" id="disease4" href="#menu4">疾病类型</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="tab" href="#menu3" id="region">地区</a>
@@ -17,7 +20,7 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div id="home" class="container tab-pane active" style="margin-left: 0px;"><br>
+        <div id="home" class="container tab-pane active" style="margin-left: 0px;max-width:2000px;"><br>
             {{!-- <h3>HOME</h3> --}}
             <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#myModal3">新增基因型</button></h3>
@@ -38,7 +41,7 @@
                 </tbody>
             </table>
         </div>
-        <div id="menu1" class="container tab-pane fade" style="margin-left: 0px;"><br>
+        <div id="menu1" class="container tab-pane fade" style="margin-left: 0px;max-width:2000px;"><br>
             <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#myModal4">新增治疗线数</button></h3>
             <table class="table table-striped table-sm">
@@ -58,7 +61,7 @@
                 </tbody>
             </table>
         </div>
-        <div id="menu2" class="container tab-pane fade" style="margin-left: 0px;"><br>
+        <div id="menu2" class="container tab-pane fade" style="margin-left: 0px;max-width:2000px;"><br>
             <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#myModal5">新增疾病类型</button></h3>
             <table class="table table-striped table-sm">
@@ -78,7 +81,7 @@
                 </tbody>
             </table>
         </div>
-        <div id="menu3" class="container tab-pane fade" style="margin-left: 0px;"><br>
+        <div id="menu3" class="container tab-pane fade" style="margin-left: 0px;max-width:2000px;"><br>
             <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#myModal">新增省份</button></h3>
             <div id="accordion">
@@ -88,6 +91,18 @@
 
             </div>
         </div>
+        <div id="menu4" class="container tab-pane fade" style="margin-left: 0px;max-width:2000px;"><br>
+            <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#myModal_diseasemain">新增疾病</button></h3>
+            <div id="accordion">
+                <div id="mainstring_disease2">
+
+                </div>
+
+            </div>
+        </div>
+
+
     </div>
 
     <!--弹出框-->
@@ -199,7 +214,6 @@
         </div>
     </div>
 
-
     <div class="modal" id="myModal5">
         <div class="modal-dialog  modal-dialog-centered">
             <div class="modal-content">
@@ -229,6 +243,58 @@
         </div>
     </div>
 
+    <div class="modal" id="myModal_diseasemain">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增疾病类型</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <input class="form-control" id="diseasemain_name" placeholder="Enter Disease">
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="disease_main_sure">确定</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="myModal_disease_info">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增子疾病</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <input class="form-control" id="disease_info_name" placeholder="Enter Disease">
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="disease_info_sure">确定</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
 
     <!--脚本部分-->
     <script>
@@ -243,16 +309,16 @@
                         for (let i = 0; i < res.data.length; i++) {
                             tmp += `
                     <div class="card">
-                    <div class="card-header" style="padding: 0px;">
+                    <div class="card-header" style="padding: 2px;">
                         <div>
-                            <a class="btn regionnameclick" style="padding:6px;" data-bs-toggle="collapse" href="#a`+ res.data[i].regionid + `">
+                            <a class="btn regionnameclick" style="width:150px;padding:0px;" data-bs-toggle="collapse" href="#a`+ res.data[i].regionid + `">
                                 `+ res.data[i].regionname + `<div style="display:none;">` + res.data[i].regionid + `</div>
                             </a>
                             <button type="button"  class="btn btn-secondary regionid" data-bs-toggle="modal"
                     data-bs-target="#myModal2" style="font-size:5px;"  >增加<div style="display:none;">`+ res.data[i].regionid + `</div></button>
                         </div>
                     </div>
-                        <div id="a`+ res.data[i].regionid + `" class="collapse " data-bs-parent="#accordion">
+                        <div id="a`+ res.data[i].regionid + `" class="collapse " style="font-size:15px;" data-bs-parent="#accordion">
                             
                         </div>
                     </div>`;
@@ -442,7 +508,7 @@
                     var content = "";
                     for (let i = 0; i < res.data.length; i++) {
                         content += `
-                        <div class="card-body">
+                        <div class="card-body" style="padding:0px;padding-top:5px;margin-left:15px;">
                             `+ res.data[i].rname + `
                         </div>`
                     }
@@ -453,6 +519,96 @@
                 //var tmp2= $("#a"+tmp).html();
                 //console.log(tmp2);
                 //alert("Kk");
+            });
+            var global_diseaseid = "";
+
+             //点击增加，记录diseaseid
+            $(document).on("click", ".diseaseid", function () {
+                global_diseaseid = this.lastChild.textContent;
+                console.log(global_diseaseid);
+            });
+
+            $(document).on("click", ".diseasenameclick", function () {
+                var tmp = this.childNodes[1].outerText;//得到regionid
+                //var tmp=this.parentNode.parentNode.parentNode;
+                $.ajax("/api/disease_info?diseaseid=" + tmp, {
+                    method: "get",
+                }).done(function (res) {
+                    console.log(res);
+                    console.log("III");
+                    var content = "";
+                    for (let i = 0; i < res.data.length; i++) {
+                        content += `
+                        <div class="card-body" style="padding:0px;padding-top:5px;margin-left:15px;">
+                            `+ res.data[i].dname + `
+                        </div>`
+                    }
+                    //console.log(res.data);
+                    $("#b" + tmp).html(content);
+                    console.log("III");
+                });
+
+                //var tmp2= $("#a"+tmp).html();
+                //console.log(tmp2);
+                //alert("Kk");
+            });
+            //疾病类型2
+            $('#disease4').click(function () {
+                $.ajax("/api/disease_main", {
+                    method: "get",
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+                        var tmp = "";
+                        for (let i = 0; i < res.data.length; i++) {
+                            tmp += `
+                    <div class="card">
+                    <div class="card-header" style="padding: 2px;">
+                        <div>
+                            <a class="btn diseasenameclick" style="width:500px;padding:0px;" data-bs-toggle="collapse" href="#b`+ res.data[i].id + `">
+                                `+ res.data[i].disease_name + `<div style="display:none;">` + res.data[i].id + `</div>
+                            </a>
+                            <button type="button"  class="btn btn-secondary diseaseid" data-bs-toggle="modal"
+                    data-bs-target="#myModal_disease_info" style="font-size:5px;"  >增加<div style="display:none;">`+ res.data[i].id + `</div></button>
+                        </div>
+                    </div>
+                        <div id="b`+ res.data[i].id + `" class="collapse" style="font-size:15px;" data-bs-parent="#accordion">
+                            
+                        </div>
+                    </div>`;
+                        }
+
+                        $("#mainstring_disease2").html(tmp);
+                    }
+                });
+            });
+
+            //添加疾病类型2确定
+            $('#disease_main_sure').click(function () {
+                var disease_name = $('#diseasemain_name').val();
+                console.log(disease_name);
+                $.ajax("/api/disease_main_insert", {
+                    method: "post",
+                    data: { "disease_name": disease_name },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+
+                    }
+                });
+            });
+
+            //给疾病类型2加子选项
+            $('#disease_info_sure').click(function () {
+                var disease_name = $('#disease_info_name').val();
+                $.ajax("/api/disease_info_insert", {
+                    method: "post",
+                    data: { "diseaseid": global_diseaseid, "dname": disease_name },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+                    }
+                });
             });
 
         })

@@ -35,19 +35,101 @@
                 id="_update">修改</button>
             <button type="button" class="btn btn-danger">删除</button>
         </div>
-        <ul class="pagination" style="margin-right: 20px;">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item active"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-        </ul>
+        <div id="idpage">
+            <ul class="pagination" style="margin-right: 20px;">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item active"><a class="page-link" href="">1</a></li>
+                <li class="page-item "><a class="page-link" href="/projectform?limit=3&offset=6">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </div>
     </div>
+    <div id="currentpage" style="display: none;">{{currentpage}}</div>
+    <div id="totalCount" style="display: none;">{{totalCount}}</div>
     <hr>
 
 </div>
 <script>
     $(document).ready(function () {
+        var currentPage = 1; //当前页
+        var totalCount = 0; //总数据量
+        var global_limit = 3;//存每页多少条记录
+        var global_offset = 0;//存跳过多少条记录
+        currentPage = parseInt($('#currentpage').text());
+        totalCount = parseInt($('#totalCount').text());
+        console.log(currentPage);
+        console.log("ii")
+        init();
+
+        function init() {
+            var num = 0;//分多少页
+            if (totalCount % global_limit != 0) {
+                num = (totalCount / global_limit + 1) ^ 0;//取整
+            } else {
+                num = (totalCount / global_limit) ^ 0;
+            }
+            console.log("num=" + num);
+            var x = 0, y = 0, z = 0;
+            var xstyle = "", ystyle = "", zstyle = "";//控制display
+            var xactive = "", yactive = "", zactive = "";//控制active
+            var xoffset = 0, yoffset = 0, zoffset = 0;//控制跳过多少
+            var last=parseInt(totalCount/global_limit)*global_limit;//最后一页跳过数目
+            if (num == 1) {//总页数为1
+                console.log("#");
+                x = 1;
+                xactive = "active";
+                ystyle = "display:none";
+                zstyle = "display:none";
+                xoffset = 0;
+            } else if (num == 2) {//总页数为2
+                console.log("##");
+                x = 1;
+                y = 2;
+                yactive = "active";
+                zstyle = "display:none";
+                xoffset = 0;
+                yoffset = global_limit;
+            } else if (num > 2) {//总页数大于2
+                if (currentPage == num) {//当前是最后一页
+                    console.log("###");
+                    zactive = "active";
+                    x = currentPage - 2;
+                    y = currentPage - 1;
+                    z = currentPage;
+                    xoffset = (currentPage - 3) * global_limit;
+                    yoffset = (currentPage - 2) * global_limit;
+                    zoffset = (currentPage - 1) * global_limit;
+                } else {
+                    console.log("####");
+                    if (currentPage == 1) {//当前是第一页
+                        xactive = "active";
+                        x = 1;
+                        y = 2;
+                        z = 3;
+                        xoffset = 0;
+                        yoffset = global_limit;
+                        zoffset = 2 * global_limit;
+                    } else {
+                        yactive = "active";
+                        x = currentPage - 1;
+                        y = currentPage;
+                        z = currentPage + 1;
+                        xoffset = (currentPage - 2) * global_limit;
+                        yoffset = (currentPage - 1) * global_limit;
+                        zoffset = (currentPage) * global_limit;
+                    }
+                }
+            }
+            var strpage = `
+                <li class="page-item"><a class="page-link" href="/projectform?limit=` + global_limit + `&offset=` + 0 + `">第一页</a></li>
+                <li class="page-item `+ xactive + `" style="` + xstyle + `"><a class="page-link" href="/projectform?limit=` + global_limit + `&offset=` + xoffset + `">` + x + `</a></li>
+                <li class="page-item `+ yactive + `" style="` + ystyle + `"><a class="page-link" href="/projectform?limit=` + global_limit + `&offset=` + yoffset + `">` + y + `</a></li>
+                <li class="page-item `+ zactive + `" style="` + zstyle + `"><a class="page-link" href="/projectform?limit=` + global_limit + `&offset=` + zoffset + `">` + z + `</a></li>
+                <li class="page-item"><a class="page-link"  href="/projectform?limit=` + global_limit + `&offset=` + last + `">最后一页</a></li>
+        `;
+            $('.pagination').html(strpage);
+        }
 
     })
 
@@ -64,7 +146,7 @@
     //修改
     $('#_update').click(function () {
         //$('#myModal2').show();
-        alert(mainid);
+        //(mainid);
         var _form = $('#form3');
         $.ajax("/api/projectlist?mainid=" + mainid, {
             method: "get",
@@ -72,7 +154,23 @@
             if (res && res.data !== undefined) {
                 console.log(res.data);
                 //
-                _form.find('input[name="pro_name"]').val("_id");
+                _form.find('input[name="mainid"]').val(res.data[0].mainid);
+                _form.find('input[name="pro_name"]').val(res.data[0].pro_name);
+                _form.find('input[name="medicine"]').val(res.data[0].medicine);
+                _form.find('input[name="indication"]').val(res.data[0].indication);
+                _form.find('input[name="test_name"]').val(res.data[0].test_name);
+                _form.find('input[name="Deptname"]').val(res.data[0].Deptname);
+                _form.find('input[name="medicine_introduce"]').val(res.data[0].medicine_introduce);
+                _form.find('input[name="paper"]').val(res.data[0].paper);
+                _form.find('input[name="medicine_group"]').val(res.data[0].medicine_group);
+                _form.find('input[name="drug_group"]').val(res.data[0].drug_group);
+                _form.find('input[name="medicine_programme"]').val(res.data[0].medicine_programme);
+
+                _form.find('textarea[name="briefly_in"]').val(res.data[0].briefly_in);
+                _form.find('textarea[name="detail_in"]').val(res.data[0].detail_in);
+                _form.find('textarea[name="briefly_out"]').val(res.data[0].briefly_out);
+                _form.find('textarea[name="detail_out"]').val(res.data[0].detail_out);
+
                 getregion(res.data[0].region_id);//设置地区
                 getregioninfo(res.data[0].region_id, res.data[0].region_info_id);//设置子地区
                 getgene(res.data[0].gene_id);//设置基因型
@@ -81,7 +179,7 @@
                 getdiseaseinfo(res.data[0].disease_id, res.data[0].disease_info_id);//设置子疾病
             }
         })
-        
+
     })
 
     //设置地区列表
@@ -126,7 +224,7 @@
             }
         })
     }
-     //设置基因型
+    //设置基因型
     function getgene(gene_id) {
         var str = "";
         var _form = $('#form3');
@@ -145,7 +243,7 @@
             }
         })
     }
-     //设置治疗线数
+    //设置治疗线数
     function gettreate(treate_id) {
         var str = "";
         var _form = $('#form3');
@@ -155,7 +253,7 @@
             console.log(res.data)
             if (res && res.data !== undefined) {
                 for (var i = 0; i < res.data.length; i++) {
-                    str +=`<option class="" value="` + res.data[i].id + `">` + res.data[i].treate_name + `</option>`;
+                    str += `<option class="" value="` + res.data[i].id + `">` + res.data[i].treate_name + `</option>`;
                 }
                 $('.form2gettreate').html(str);// = str;
                 if (treate_id != null) {
@@ -164,7 +262,7 @@
             }
         })
     }
-     //设置疾病列表
+    //设置疾病列表
     function getdisease(disease_id) {
         var str = "";
         var _form = $('#form3');
@@ -208,6 +306,41 @@
         })
     }
 
+    //点击form2地区的select，获取地区列表
+    $(document).on("click", "#form2getregion", function () {
+        var str = "";
+        var that = this;
+        var select_regionid = $('#form2getregion').val();
+        $.ajax("/api/region_info?regionid=" + select_regionid, {
+            method: "get",
+        }).done(function (res) {
+            var content = "";
+            for (let i = 0; i < res.data.length; i++) {
+                content += `<option class="" value="` + res.data[i].rid + `">` + res.data[i].rname + `</option>`;
+            }
+            console.log(content);
+            $('.form2regioninfoclick').html(content)
+        });
+
+    })
+    //点击form2疾病的select，获取疾病列表
+    $(document).on("click", "#form2gedisease", function () {
+        str = "";
+        var that = this;
+        var select_diseaseid = $('#form2gedisease').val();
+        //console.log(select_regionid)
+        $.ajax("/api/disease_info?diseaseid=" + select_diseaseid, {
+            method: "get",
+        }).done(function (res) {
+            var content = "";
+            for (let i = 0; i < res.data.length; i++) {
+                content += `<option class="" value="` + res.data[i].id + `">` + res.data[i].dname + `</option>`;
+            }
+            console.log(content);
+            $('.form2diseaseinfoclick').html(content)
+        });
+
+    })
 
     var time_region = 0;
     //点击地区的select，获取地区列表
@@ -278,7 +411,7 @@
         }
     })
     var time_disease = 0;
-    //点击地区的select，获取地区列表
+    //点击疾病的select，获取地区列表
     $(document).on("click", ".diseaseclick", function () {
         str = "";
         var that = this;
@@ -333,6 +466,7 @@
                         <span class="input-group-text" style="width:120px;">项目类别</span>
                         <input type="text" class="form-control">
                     </div> --}}
+
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="width:120px;">项目名称</span>
                         <input type="text" class="form-control" name="pro_name" required>
@@ -407,10 +541,10 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="width:120px;">试验分期</span>
                         <select class="form-select" id="sel1" name="test_stage" required>
-                            <option value="1">I期</option>
-                            <option  value="2">II期</option>
-                            <option  value="3">III期</option>
-                            <option  value="4">IV期</option>
+                            <option>I期</option>
+                            <option>II期</option>
+                            <option>III期</option>
+                            <option>IV期</option>
                         </select>
                         <br>
                     </div>
@@ -524,11 +658,15 @@
 
             <!-- 模态框内容 -->
             <div class="modal-body">
-                <form action="/api/formdata" method="post" id="form3" class="was-validated">
+                <form action="/api/formdataupdate" method="post" id="form3" class="was-validated">
                     {{!-- <div class="input-group mb-3">
                         <span class="input-group-text" style="width:120px;">项目类别</span>
                         <input type="text" class="form-control">
                     </div> --}}
+                    <div class="input-group mb-3" style="display: none;">
+                        <span class="input-group-text" style="width:120px;">id</span>
+                        <input type="text" class="form-control" name="mainid" required>
+                    </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="width:120px;">项目名称</span>
                         <input type="text" class="form-control" name="pro_name" required>
@@ -603,12 +741,12 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="width:120px;">试验分期</span>
                         <select class="form-select" id="sel1" name="test_stage" required>
-                            
-                            <option value="1">I期</option>
-                            <option  value="2">II期</option>
-                            <option  value="3">III期</option>
-                            <option  value="4">IV期</option>
-                            
+
+                            <option>I期</option>
+                            <option>II期</option>
+                            <option>III期</option>
+                            <option>IV期</option>
+
                         </select>
                         <br>
                     </div>

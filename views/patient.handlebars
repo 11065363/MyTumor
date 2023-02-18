@@ -71,7 +71,7 @@
                     <div class="alert alert-success" style="padding: 10px;display:none;" id="modal5alert">
                         <strong>成功!</strong>
                     </div>
-                    <button type="button" class="btn btn-primary" id="disease_sure">确定</button>
+                    <button type="button" class="btn btn-primary" id="test_sure">确定</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
                 </div>
 
@@ -82,10 +82,8 @@
     <!--脚本部分-->
     <script>
         $(document).ready(function () {
-            //$('#gene').click(function () {
-            //    getgene();
-            //});
-
+            console.log("dd");
+getpatient_n();
             //获取未审核列表
             function getpatient_n() {
                 $.ajax("/api/exam_n", {
@@ -97,13 +95,14 @@
                         for (let i = 0; i < res.data.length; i++) {
                             tmp += `
                             <tr>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">res.data[i].id</td>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">res.data[i].id</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+res.data[i].id+`</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">`+res.data[i].name+`</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+res.data[i].sex+`</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+res.data[i].birth+`</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+res.data[i].phone+`</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+res.data[i].idcard+`</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+res.data[i].id+`</td>
+
                             </tr>
                             `;
                         }
@@ -115,9 +114,12 @@
             //getpatient_n();
 
             //添加测试数据
-            $('#gene_sure').click(function () {
-                var gene_name = $('#gene_name').val();
+            $('#test_sure').click(function () {
+                var gene_name = $('#sex').val();
                 var gene_message = $('#gene_message').val();
+                var gene_name = $('#birth').val();
+                var gene_message = $('#phone').val();
+                var gene_name = $('#idcard').val();
                 $.ajax("/api/gene_insert", {
                     method: "post",
                     data: { "gene_name": gene_name, "message": gene_message },
@@ -139,19 +141,19 @@
                     file: new File(), // 通过 input 或者 new File 获取
                     config: {
                         env: 'prod-6go1azha6b1ef67a' // 需要替换成自己的微信云托管环境ID
-                    }
+                    },
                     success: res => {
-                        console.log(res.fileID)
+                        console.log(res.fileID);
                     },
                     fail: err => {
-                        console.error(err)
+                        console.error(err);
                     }
                 })
             })
 
             //下载数据
+            console.log("kk");
             $('#testdown').click(function () {
-                console.log("kk");
                 $.ajax("/api/download", {
                     method: "get",
                     //data: { "gene_name": gene_name, "message": gene_message },

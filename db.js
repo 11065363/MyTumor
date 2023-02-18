@@ -201,6 +201,43 @@ const treatment_require = sequelize.define("treatment_require", {
   freezeTableName: true 
 });
 
+// 定义数据模型Patmaster
+const Patmaster = sequelize.define("Patmaster", {
+  id:{
+    type:DataTypes.INTEGER,
+    primaryKey:true
+  },
+  name: {
+    type: DataTypes.STRING,
+  },
+  sex: {
+    type: DataTypes.INTEGER,
+  },
+  birth: {
+    type: DataTypes.DATE,
+  },
+  phone: {
+    type: DataTypes.STRING,
+  },
+  idcard: {
+    type: DataTypes.STRING,
+  },
+  address: {
+    type: DataTypes.STRING,
+  },
+  
+},{
+  //timestamps: false, // 不要默认时间戳 数据库没有时间戳字段时，设置为false，否则报错  SequelizeDatabaseError: Unknown column 'createdAt' in 'field list'
+  freezeTableName: true 
+});
+
+//视图：
+const vs_patmaster_project = sequelize.define('vs_patmaster_project', {
+  // ... (属性)
+}, {
+  tableName: 'vs_patmaster_project'
+});
+
 // 定义数据模型disease
 const Disease = sequelize.define("Disease", {
   id:{
@@ -235,5 +272,7 @@ module.exports = {
   gene,
   treatment_require,
   Disease,
-  Disease_info
+  Patmaster,
+  Disease_info,
+  vs_patmaster_project
 };

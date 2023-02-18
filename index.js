@@ -17,6 +17,7 @@ const {
   gene,
   treatment_require,
   Disease,
+  Patmaster,
   Disease_info
 } = require("./db");
 const {
@@ -105,17 +106,32 @@ app.post("/login", async (req, res) => {
 //项目表单
 app.get("/projectform", async (req, res) => {
   if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
+    let mylimit=3;
+    let myoffset=0;
+    var t=1;//当前页
+    if (req.query.limit != undefined) {
+       mylimit = parseInt(req.query.limit); //获取每页数量
+    }
+    if (req.query.offset != undefined) {
+      myoffset = parseInt(req.query.offset); //获取每页数量
+      t=parseInt(myoffset/mylimit)+1;
+   }
     const personInfoList = await Promain.findAll({
-      limit: 10
+      limit: mylimit,
+      offset:myoffset,
+      order: [[ 'mainid', 'DESC' ]],
     });
     res.render('projectform', {
-      personInfoList: personInfoList
+      personInfoList: personInfoList,
+      currentpage:t,
+      totalCount:10
     })
   } else {
     res.redirect('login');
   }
 
 });
+
 
 //患者表单
 app.get("/patient", async (req, res) => {
@@ -137,14 +153,6 @@ app.get("/dictionary", async (req, res) => {
   }
 });
 
-// 提交数据
-app.post("/api/formdata", async (req, res) => {
-  console.log("ssee");
-  var data = JSON.stringify(req.body)
-  console.log(data)
-  await Promain.create(req.body);
-  res.redirect(303, '/projectform');
-});
 
 
 // 更新计数
@@ -225,7 +233,67 @@ app.get("/api/wx_openid", async (req, res) => {
 });
 
 //API部分
-//获取项目列表
+// 提交数据
+
+//项目表单
+app.get("/prolistform", async (req, res) => {
+    let mylimit=3;
+    let myoffset=0;
+    var t=1;//当前页
+    if (req.query.limit != undefined) {
+       mylimit = parseInt(req.query.limit); //获取每页数量
+    }
+    if (req.query.offset != undefined) {
+      myoffset = parseInt(req.query.offset); //获取每页数量
+      t=parseInt(myoffset/mylimit)+1;
+   }
+    const personInfoList = await Promain.findAll({
+      limit: mylimit,
+      offset:myoffset,
+      order: [[ 'mainid', 'DESC' ]],
+    });
+    res.render('projectform', {
+      personInfoList: personInfoList,
+      currentpage:t,
+      totalCount:10
+    })
+
+
+});
+
+// 获取患者信息表
+app.get("/api/exam_n", async (req, res) => {
+  const result = await Patmaster.findAll();;
+  res.send({
+    code: 0,
+    data: result,
+  });
+});
+
+app.post("/api/formdata", async (req, res) => {
+  //console.log("ssee");
+  var data = JSON.stringify(req.body)
+  console.log(data)
+  await Promain.create(req.body);
+  res.redirect(303, '/projectform');
+});
+
+// 修改数据
+app.post("/api/formdataupdate", async (req, res) => {
+  console.log("ssee");
+  var data = JSON.stringify(req.body)
+  //console.log(data)
+  // console.log(req.body)
+  // console.log(req.body.mainid)
+  await Promain.update(req.body, {
+    where: {
+      mainid: req.body.mainid
+    }
+  });
+  res.redirect(303, '/projectform');
+});
+
+//获取某一个项目，通过mainid
 app.get("/api/projectlist", async (req, res) => {
   let mainid = req.query.mainid;
   const result = await Promain.findAll({

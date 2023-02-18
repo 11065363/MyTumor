@@ -232,11 +232,11 @@ app.get("/api/wx_openid", async (req, res) => {
   }
 });
 
-//API部分
-// 提交数据
+//API部分*************************************************************
+
 
 //项目表单
-app.get("/prolistform", async (req, res) => {
+app.get("/api/prolistform", async (req, res) => {
     let mylimit=3;
     let myoffset=0;
     var t=1;//当前页
@@ -252,12 +252,15 @@ app.get("/prolistform", async (req, res) => {
       offset:myoffset,
       order: [[ 'mainid', 'DESC' ]],
     });
-    res.render('projectform', {
-      personInfoList: personInfoList,
-      currentpage:t,
-      totalCount:10
+    // res.render('projectform', {
+    //   personInfoList: personInfoList,
+    //   currentpage:t,
+    //   totalCount:10//总条数
+    // })
+    res.send({
+      code:0,
+      data:result,
     })
-
 
 });
 

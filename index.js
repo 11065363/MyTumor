@@ -247,7 +247,7 @@ app.get("/api/prolistform", async (req, res) => {
       myoffset = parseInt(req.query.offset); //获取每页数量
       t=parseInt(myoffset/mylimit)+1;
    }
-    const personInfoList = await Promain.findAll({
+    const result = await Promain.findAll({
       limit: mylimit,
       offset:myoffset,
       order: [[ 'mainid', 'DESC' ]],

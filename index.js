@@ -6,6 +6,9 @@ const request = require('request');
 const fs = require('fs');
 const moment = require('moment');
 var session = require('express-session');
+const {
+  Op
+} = require("sequelize");
 
 const {
   init: initDB,
@@ -106,25 +109,27 @@ app.post("/login", async (req, res) => {
 //项目表单
 app.get("/projectform", async (req, res) => {
   if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
-    let mylimit=3;
-    let myoffset=0;
-    var t=1;//当前页
+    let mylimit = 3;
+    let myoffset = 0;
+    var t = 1; //当前页
     if (req.query.limit != undefined) {
-       mylimit = parseInt(req.query.limit); //获取每页数量
+      mylimit = parseInt(req.query.limit); //获取每页数量
     }
     if (req.query.offset != undefined) {
       myoffset = parseInt(req.query.offset); //获取每页数量
-      t=parseInt(myoffset/mylimit)+1;
-   }
+      t = parseInt(myoffset / mylimit) + 1;
+    }
     const personInfoList = await Promain.findAll({
       limit: mylimit,
-      offset:myoffset,
-      order: [[ 'mainid', 'DESC' ]],
+      offset: myoffset,
+      order: [
+        ['mainid', 'DESC']
+      ],
     });
     res.render('projectform', {
       personInfoList: personInfoList,
-      currentpage:t,
-      totalCount:10
+      currentpage: t,
+      totalCount: 10
     })
   } else {
     res.redirect('login');
@@ -234,33 +239,128 @@ app.get("/api/wx_openid", async (req, res) => {
 
 //API部分*************************************************************
 
+//获取openid
+app.get("/api/wxouth", async (req, res) => {
+  //console.log("ssee");
+  var data = JSON.stringify(req.body)
+  console.log(data)
+  var appid="wx69571ae610f52ccd";
+  var secret="cb8eb8069f90cdbdf458c6c2b12820dd";
+  var js_code="0717Lw00060QvP1UfX200Q4CF337Lw0i";
+  //var grant_type=" authorization_code";
+  const result = await call({
+    url: 'https://api.weixin.qq.com/sns/jscode2session?appid='+appid+'&secret='+secret+'&js_code='+js_code+'&grant_type=authorization_code',
+    method: 'GET',
+  })
+  console.log(result);
+  //https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code 
+
+});
+
+app.get("/api/sendmessage", async (req, res) => {
+  //console.log("ssee");
+  var canshu=new Object();
+
+  const result = await call({
+    url: 'https://api.weixin.qq.com/sns/jscode2session?appid='+appid+'&secret='+secret+'&js_code='+js_code+'&grant_type=authorization_code',
+    method: 'POST',
+    data: {
+      "touser": "ordPd4tUBZLGxowWznQwYaA9GPc0",
+      "template_id": "_nBaREKTiD_4K9lGE9m0YQmu6pQmb52FrP6Tkvd-xY4",
+      "data": {
+          "name1": {
+              "value": "某某"
+          },
+          "phrase3": {
+              "value": "￥100"
+          },
+          "thing4": {
+              "value": "广州至北京"
+          } ,
+          "thing6": {
+              "value": "2018-01-01"
+          }
+      }
+    }
+  })
+  console.log(result);
+  //https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code 
+
+});
 
 //项目表单
 app.get("/api/prolistform", async (req, res) => {
-    let mylimit=3;
-    let myoffset=0;
-    var t=1;//当前页
-    if (req.query.limit != undefined) {
-       mylimit = parseInt(req.query.limit); //获取每页数量
-    }
-    if (req.query.offset != undefined) {
-      myoffset = parseInt(req.query.offset); //获取每页数量
-      t=parseInt(myoffset/mylimit)+1;
-   }
-    const result = await Promain.findAll({
-      limit: mylimit,
-      offset:myoffset,
-      order: [[ 'mainid', 'DESC' ]],
-    });
-    // res.render('projectform', {
-    //   personInfoList: personInfoList,
-    //   currentpage:t,
-    //   totalCount:10//总条数
-    // })
-    res.send({
-      code:0,
-      data:result,
-    })
+  let mylimit = 3;
+  let myoffset = 0;
+  var t = 1; //当前页
+  if (req.query.limit != undefined) {
+    mylimit = parseInt(req.query.limit); //获取每页数量
+  }
+  if (req.query.offset != undefined) {
+    myoffset = parseInt(req.query.offset); //获取每页数量
+    t = parseInt(myoffset / mylimit) + 1;
+  }
+  const result = await Promain.findAll({
+    limit: mylimit,
+    offset: myoffset,
+    order: [
+      ['mainid', 'DESC']
+    ],
+  });
+  res.send({
+    code: 0,
+    data: result,
+  })
+
+});
+
+
+//项目表单
+app.post("/api/prolistform", async (req, res) => {
+  let mylimit = 3;
+  let myoffset = 0;
+  var where = new Object();
+  var t = 1; //当前页
+  console.log(req.body);
+  if (req.body.limit != undefined) {
+    mylimit = parseInt(req.body.limit); //获取每页数量
+  }
+  if (req.body.offset != undefined) {
+    myoffset = parseInt(req.body.offset); //获取每页数量
+    t = parseInt(myoffset / mylimit) + 1;
+  }
+  if (req.body.gene_id != undefined) {
+    where.gene_id = req.body.gene_id
+  }
+  if (req.body.treate_id != undefined) {
+    where.treate_id = req.body.treate_id
+  }
+  if (req.body.disease_id != undefined) {
+    where.disease_id = req.body.disease_id
+  }
+  if (req.body.disease_info_id != undefined) {
+    where.disease_info_id = req.body.disease_info_id
+  }
+  if (req.body.region_id != undefined) {
+    where.region_id = req.body.region_id
+  }
+  if (req.body.region_info_id != undefined) {
+    where.region_info_id = req.body.region_info_id
+  }
+  //where.mainid=7;
+
+  const result = await Promain.findAll({
+    limit: mylimit,
+    offset: myoffset,
+    where,
+    order: [
+      ['mainid', 'DESC']
+    ],
+  });
+  res.send({
+    code: 0,
+    data: result,
+  })
 
 });
 

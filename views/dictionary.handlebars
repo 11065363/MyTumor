@@ -191,7 +191,7 @@
 
                 <!-- 模态框头部 -->
                 <div class="modal-header">
-                    <h4 class="modal-title">新增基因型</h4>
+                    <h4 class="modal-title">新增治疗线数</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -249,7 +249,7 @@
 
                 <!-- 模态框头部 -->
                 <div class="modal-header">
-                    <h4 class="modal-title">新增疾病类型</h4>
+                    <h4 class="modal-title">新增疾病类型333</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -260,6 +260,9 @@
 
                 <!-- 模态框底部 -->
                 <div class="modal-footer">
+                    <div class="alert alert-success" style="padding: 10px;display:none;" id="myModal_diseasemainalert">
+                        <strong>成功!</strong>
+                    </div>
                     <button type="button" class="btn btn-primary" id="disease_main_sure">确定</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
                 </div>
@@ -285,6 +288,9 @@
 
                 <!-- 模态框底部 -->
                 <div class="modal-footer">
+                    <div class="alert alert-success" style="padding: 10px;display:none;" id="myModal_diseaseinfoalert">
+                        <strong>成功!</strong>
+                    </div>
                     <button type="button" class="btn btn-primary" id="disease_info_sure">确定</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
                 </div>
@@ -522,7 +528,7 @@
             });
             var global_diseaseid = "";
 
-             //点击增加，记录diseaseid
+            //点击增加，记录diseaseid
             $(document).on("click", ".diseaseid", function () {
                 global_diseaseid = this.lastChild.textContent;
                 console.log(global_diseaseid);
@@ -554,6 +560,9 @@
             });
             //疾病类型2
             $('#disease4').click(function () {
+                getdisease4();
+            });
+            function getdisease4() {
                 $.ajax("/api/disease_main", {
                     method: "get",
                 }).done(function (res) {
@@ -581,33 +590,39 @@
                         $("#mainstring_disease2").html(tmp);
                     }
                 });
-            });
+            }
 
             //添加疾病类型2确定
             $('#disease_main_sure').click(function () {
+           
                 var disease_name = $('#diseasemain_name').val();
-                console.log(disease_name);
+                //console.log(disease_name);
                 $.ajax("/api/disease_main_insert", {
                     method: "post",
                     data: { "disease_name": disease_name },
                 }).done(function (res) {
-                    if (res && res.data !== undefined) {
-                        console.log(res.data);
+                        $('#myModal_diseasemainalert').show();
+                        getdisease4();
+                        setTimeout(function () {
+                            $('#myModal_diseasemainalert').hide();
+                        }, 400);
 
-                    }
                 });
             });
 
             //给疾病类型2加子选项
             $('#disease_info_sure').click(function () {
+                console.log("kkkk");
                 var disease_name = $('#disease_info_name').val();
                 $.ajax("/api/disease_info_insert", {
                     method: "post",
                     data: { "diseaseid": global_diseaseid, "dname": disease_name },
                 }).done(function (res) {
-                    if (res && res.data !== undefined) {
-                        console.log(res.data);
-                    }
+                     $('#myModal_diseaseinfoalert').show();
+                        //getdisease4();
+                        setTimeout(function () {
+                            $('#myModal_diseaseinfoalert').hide();
+                        }, 400);
                 });
             });
 

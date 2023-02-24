@@ -260,27 +260,18 @@ app.get("/api/wxouth", async (req, res) => {
 app.get("/api/sendmessage", async (req, res) => {
   //console.log("ssee");
   var canshu=new Object();
+  canshu.name1="a";
+  canshu.phrase3="b";
+  canshu.thing4="c";
+  canshu.thing6="d";
 
   const result = await call({
-    url: 'api.weixin.qq.com/cgi-bin/message/subscribe/send',
+    url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send',
     method: 'POST',
     data: {
       "touser": "ordPd4tUBZLGxowWznQwYaA9GPc0",
       "template_id": "_nBaREKTiD_4K9lGE9m0YQmu6pQmb52FrP6Tkvd-xY4",
-      "data": {
-          "name1": {
-              "value": "某某"
-          },
-          "phrase3": {
-              "value": "￥100"
-          },
-          "thing4": {
-              "value": "广州至北京"
-          } ,
-          "thing6": {
-              "value": "2018-01-01"
-          }
-      }
+      "data": canshu
     }
   })
   console.log(result);

@@ -262,7 +262,7 @@ app.get("/api/sendmessage", async (req, res) => {
   var canshu=new Object();
 
   const result = await call({
-    url: 'https://api.weixin.qq.com/sns/jscode2session?appid='+appid+'&secret='+secret+'&js_code='+js_code+'&grant_type=authorization_code',
+    url: 'api.weixin.qq.com/cgi-bin/message/subscribe/send',
     method: 'POST',
     data: {
       "touser": "ordPd4tUBZLGxowWznQwYaA9GPc0",

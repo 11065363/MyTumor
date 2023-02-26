@@ -171,9 +171,9 @@
                 })
             });
             $("#testpost").click(function () {
-                $.ajax("/api/prolistform", {
+                $.ajax("/api/insertpatient", {
                     method: "post",
-                    data: { "limit": 3, "offset": 0, "gene_id": 1 },
+                    data: { "name": "3", "idcard": "0", "address": "1" },
                 }).done(function (res) {
                     console.log(res);
                 });

@@ -244,12 +244,12 @@ app.get("/api/wxouth", async (req, res) => {
   //console.log("ssee");
   var data = JSON.stringify(req.body)
   console.log(data)
-  var appid="wx69571ae610f52ccd";
-  var secret="cb8eb8069f90cdbdf458c6c2b12820dd";
-  var js_code="0717Lw00060QvP1UfX200Q4CF337Lw0i";
+  var appid = "wx69571ae610f52ccd";
+  var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
+  var js_code = "0717Lw00060QvP1UfX200Q4CF337Lw0i";
   //var grant_type=" authorization_code";
   const result = await call({
-    url: 'https://api.weixin.qq.com/sns/jscode2session?appid='+appid+'&secret='+secret+'&js_code='+js_code+'&grant_type=authorization_code',
+    url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
     method: 'GET',
   })
   console.log(result);
@@ -258,20 +258,39 @@ app.get("/api/wxouth", async (req, res) => {
 });
 
 app.get("/api/sendmessage", async (req, res) => {
-  //console.log("ssee");
-  var canshu=new Object();
-  canshu.name1="a";
-  canshu.phrase3="b";
-  canshu.thing4="c";
-  canshu.thing6="d";
-
+  var canshu = new Object();
+  canshu.name1 = "a";
+  canshu.phrase3 = "b";
+  canshu.thing4 = "c";
+  canshu.thing6 = "d";
+  var appid = "wx69571ae610f52ccd";
+  var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
+  const tokenresult = await call({
+    url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='+appid+'&secret='+secret,
+    method: 'GET',
+  })
+  var ttt=eval ("(" + tokenresult + ")");
+  
   const result = await call({
-    url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send',
+    url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token='+ttt.access_token,
     method: 'POST',
     data: {
       "touser": "ordPd4tUBZLGxowWznQwYaA9GPc0",
       "template_id": "_nBaREKTiD_4K9lGE9m0YQmu6pQmb52FrP6Tkvd-xY4",
-      "data": canshu
+      "data": {
+        "name1": {
+          value: '我是玖柒后'
+        },
+        "phrase3": {
+          value: '通过'
+        },
+        "thing4": {
+          value: "发送成功！"
+        },
+        "thing6": {
+          value: "发送成功！"
+        }
+      },
     }
   })
   console.log(result);
@@ -353,6 +372,19 @@ app.post("/api/prolistform", async (req, res) => {
     data: result,
   })
 
+});
+
+//插入患者信息
+app.post("/api/insertpatient", async (req, res) => {
+  //console.log("ssee");
+  var data = JSON.stringify(req.body)
+  console.log(data)
+  var tmp= await Patmaster.create(req.body);
+  console.log(tmp)
+  res.send({
+    code: 0,
+    data: "",
+  });
 });
 
 // 获取患者信息表

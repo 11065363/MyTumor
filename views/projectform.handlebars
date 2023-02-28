@@ -39,14 +39,14 @@
             <ul class="pagination" style="margin-right: 20px;">
                 <li class="page-item"><a class="page-link" href="#">Previous</a></li>
                 <li class="page-item active"><a class="page-link" href="">1</a></li>
-                <li class="page-item "><a class="page-link" href="/projectform?limit=3&offset=6">2</a></li>
+                <li class="page-item "><a class="page-link" href="/projectform?limit=5&offset=10">2</a></li>
                 <li class="page-item"><a class="page-link" href="#">3</a></li>
                 <li class="page-item"><a class="page-link" href="#">Next</a></li>
             </ul>
         </div>
     </div>
     <div id="currentpage" style="display: none;">{{currentpage}}</div>
-    <div id="totalCount" style="display: none;">{{totalCount}}</div>
+    <div style="display:none;">共<span id="totalCount">{{totalCount}}</span>条</div>
     <hr>
 
 </div>
@@ -54,7 +54,7 @@
     $(document).ready(function () {
         var currentPage = 1; //当前页
         var totalCount = 0; //总数据量
-        var global_limit = 3;//存每页多少条记录
+        var global_limit = 15;//存每页多少条记录
         //var global_offset = 0;//存跳过多少条记录
         currentPage = parseInt($('#currentpage').text());
         totalCount = parseInt($('#totalCount').text());
@@ -74,7 +74,7 @@
             var xstyle = "", ystyle = "", zstyle = "";//控制display
             var xactive = "", yactive = "", zactive = "";//控制active
             var xoffset = 0, yoffset = 0, zoffset = 0;//控制跳过多少
-            var last=parseInt(totalCount/global_limit)*global_limit;//最后一页跳过数目
+            var last = parseInt(totalCount / global_limit) * global_limit;//最后一页跳过数目
             if (num == 1) {//总页数为1
                 console.log("#");
                 x = 1;
@@ -86,7 +86,7 @@
                 console.log("##");
                 x = 1;
                 y = 2;
-                yactive = "active";
+                //yactive = "active";///////////////////暂时先不处理
                 zstyle = "display:none";
                 xoffset = 0;
                 yoffset = global_limit;
@@ -122,11 +122,13 @@
                 }
             }
             var strpage = `
+            
                 <li class="page-item"><a class="page-link" href="/projectform?limit=` + global_limit + `&offset=` + 0 + `">第一页</a></li>
                 <li class="page-item `+ xactive + `" style="` + xstyle + `"><a class="page-link" href="/projectform?limit=` + global_limit + `&offset=` + xoffset + `">` + x + `</a></li>
                 <li class="page-item `+ yactive + `" style="` + ystyle + `"><a class="page-link" href="/projectform?limit=` + global_limit + `&offset=` + yoffset + `">` + y + `</a></li>
                 <li class="page-item `+ zactive + `" style="` + zstyle + `"><a class="page-link" href="/projectform?limit=` + global_limit + `&offset=` + zoffset + `">` + z + `</a></li>
                 <li class="page-item"><a class="page-link"  href="/projectform?limit=` + global_limit + `&offset=` + last + `">最后一页</a></li>
+        <li  style="margin-top:8px;margin-left:15px;">共<span >{{totalCount}}</span>条</li>
         `;
             $('.pagination').html(strpage);
         }

@@ -8,13 +8,14 @@
 </ul>
 
 <!-- Tab panes -->
-<div class="tab-content">
-    <div id="home" class="container tab-pane active" style="margin-left: 0px;"><br>
+<div class="tab-content" style="">
+    <div id="home" class="container tab-pane active" style="margin-left: 0px;max-width:2000px;"><br>
         <h3><button type="button" class="btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#myModal5">新增测试数据</button></h3>
         <button type="button" class="btn btn-primary" id="testup">测试上传</button>
         <button type="button" class="btn btn-primary" id="testdown">测试下载</button>
         <button type="button" class="btn btn-primary" id="testpost">测试post</button>
+        <button type="button" class="btn btn-primary" id="testpatient">测试患者项目</button>
         <table class="table table-hover table-striped" style=" table-layout: fixed;">
             <thead class="table-primary">
                 <tr>
@@ -23,14 +24,14 @@
                     <th>性别</th>
                     <th>出生日期</th>
                     <th>项目名称</th>
-                    <th>疾病类型</th>
-                    <th>试验分期</th>
-                    <th>状态</th>
+                    <th>电话</th>
+                    {{!-- <th>试验分期</th> --}}
+                    <th>操作<span id="caozuo1" style="display:none;color:aqua;">成功！</span></th>
                 </tr>
             </thead>
             <tbody id="exam_n">
                 <tr>
-                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">23</td>
+                    {{!-- <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">23</td>
                     <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
                     <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
                     <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
@@ -40,15 +41,41 @@
                     <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">
                         <button type="button" class="btn btn-primary">通过</button>
                         <button type="button" class="btn btn-primary">不通过</button>
-                    </td>
+                    </td> --}}
                 </tr>
             </tbody>
         </table>
     </div>
-    <div id="menu1" class="container tab-pane fade" style="margin-left: 0px;"><br>
-        <h3>Menu 1</h3>
-        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </p>
+    <div id="menu1" class="container tab-pane fade" style="margin-left: 0px;max-width:2000px;"><br>
+         <table class="table table-hover table-striped" style=" table-layout: fixed;">
+            <thead class="table-primary">
+                <tr>
+                    <th>项目编号</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>出生日期</th>
+                    <th>项目名称</th>
+                    <th>电话</th>
+                    {{!-- <th>试验分期</th> --}}
+                    {{!-- <th>操作</th> --}}
+                </tr>
+            </thead>
+            <tbody id="exam_n2">
+                <tr>
+                    {{!-- <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">23</td>
+                    <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">
+                        <button type="button" class="btn btn-primary">通过</button>
+                        <button type="button" class="btn btn-primary">不通过</button>
+                    </td> --}}
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <!--弹出框-->
@@ -90,9 +117,11 @@
         $(document).ready(function () {
             console.log("dd");
             getpatient_n();
+            getpatient_n2();
+            
             //获取未审核列表
             function getpatient_n() {
-                $.ajax("/api/exam_n", {
+                $.ajax("/api/vs_patmaster_project?data=0", {
                     method: "get",
                 }).done(function (res) {
                     if (res && res.data !== undefined) {
@@ -103,14 +132,14 @@
                             <tr>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].id + `</td>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">`+ res.data[i].name + `</td>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].sex + `</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].性别 + `</td>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].birth + `</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].pro_name + `</td>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].phone + `</td>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].idcard + `</td>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].id + `</td>
+                               
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">
-                                    <button type="button" class="btn btn-primary pass" >通过<div style="display:none ;">`+res.data[i].id+`</div></button>
-                                    <button type="button" class="btn btn-primary nopass" >不通过</button>
+                                    <button type="button" class="btn btn-primary pass" >通过<div style="display:none ;">`+ res.data[i].id + `</div></button>
+                                    <button type="button" class="btn btn-primary nopass" >不通过<div style="display:none ;">`+ res.data[i].id + `</div></button>
                                 </td>
                             </tr>
                             `;
@@ -121,14 +150,69 @@
                 });
             }
 
+            //获取已审核列表
+            function getpatient_n2() {
+                $.ajax("/api/vs_patmaster_project?data=1", {
+                    method: "get",
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+                        console.log(res.data);
+                        var tmp = "";
+                        for (let i = 0; i < res.data.length; i++) {
+                            tmp += `
+                            <tr>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].id + `</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">`+ res.data[i].name + `</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].性别 + `</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].birth + `</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].pro_name + `</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].phone + `</td>
+                               
+                                
+                            </tr>
+                            `;
+                        }
+
+                        $("#exam_n2").html(tmp);
+                    }
+                });
+            }
+
             //点击通过
-            $(document).on("click", ".pass", function () {
+            $(document).on("click", ".pass", function () {///api/updatepromain_patmaster_vs
                 var str = "";
-                var that = this;
-                console.log("kkk");
-                
-                var tmp = $(this).children().first().text();
-                console.log(tmp);
+                var vsid = $(this).children().first().text();//vsid
+                $.ajax("/api/updatepromain_patmaster_vs", {
+                    method: "post",
+                    data: { "vsid": vsid, "status": 8 },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+
+                    }
+                    $('#caozuo1').show();
+                    setTimeout(function () {
+                            $('#caozuo1').hide();
+                        }, 400);
+                    getpatient_n();
+                    getpatient_n2();
+                });
+
+
+            })
+
+            //点击不通过
+            $(document).on("click", ".nopass", function () {///api/updatepromain_patmaster_vs
+                var str = "";
+                var vsid = $(this).children().first().text();//vsid
+                $.ajax("/api/updatepromain_patmaster_vs", {
+                    method: "post",
+                    data: { "vsid": vsid, "status": 9 },
+                }).done(function (res) {
+                    if (res && res.data !== undefined) {
+
+                    }
+                });
+
 
             })
 
@@ -188,9 +272,12 @@
                 }).done(function (res) {
                     console.log(res);
                 });
-            })
+            });
 
-        })
+            $('#testpatient').click(function () {
+                console.log("kk");
+            });
+        });
     </script>
 
 </div>

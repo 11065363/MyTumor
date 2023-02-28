@@ -236,9 +236,48 @@ const Patmaster = sequelize.define("Patmaster", {
 
 //视图：
 const vs_patmaster_project = sequelize.define('vs_patmaster_project', {
-  // ... (属性)
-}, {
-  tableName: 'vs_patmaster_project'
+  id:{
+    type:DataTypes.INTEGER,
+    primaryKey:true
+  },
+  name:{
+    type:DataTypes.STRING,
+  },
+  birth:{
+    type:DataTypes.STRING,
+  },
+  phone:{
+    type:DataTypes.STRING,
+  },
+  idcard:{
+    type:DataTypes.STRING,
+  },
+  address:{
+    type:DataTypes.STRING,
+  },
+  mainid:{
+    type:DataTypes.INTEGER,
+  },
+  title:{
+    type:DataTypes.STRING,
+  },
+  pro_name:{
+    type:DataTypes.STRING,
+  },
+  test_stage:{
+    type:DataTypes.STRING,
+  },
+  性别:{
+    type:DataTypes.STRING,
+  },
+
+},
+//  {
+//   viewname: 'vs_patmaster_project'
+// },
+{
+  timestamps: false, // 不要默认时间戳 数据库没有时间戳字段时，设置为false，否则报错  SequelizeDatabaseError: Unknown column 'createdAt' in 'field list'
+  freezeTableName: true 
 });
 
 // 定义数据模型disease
@@ -253,6 +292,26 @@ const Disease = sequelize.define("Disease", {
   message: {
     type: DataTypes.STRING,
   },
+},{
+  //timestamps: false, // 不要默认时间戳 数据库没有时间戳字段时，设置为false，否则报错  SequelizeDatabaseError: Unknown column 'createdAt' in 'field list'
+  freezeTableName: true 
+});
+
+// 定义数据模型Promain_patmaster_vs
+const Promain_patmaster_vs = sequelize.define("Promain_patmaster_vs", {
+  vsid:{
+    type:DataTypes.INTEGER,
+    primaryKey:true
+  },
+  mainid: {
+    type: DataTypes.INTEGER,
+  },
+  id: {
+    type: DataTypes.INTEGER,
+  },
+  status: {
+    type: DataTypes.INTEGER,
+  }
 },{
   //timestamps: false, // 不要默认时间戳 数据库没有时间戳字段时，设置为false，否则报错  SequelizeDatabaseError: Unknown column 'createdAt' in 'field list'
   freezeTableName: true 
@@ -277,5 +336,6 @@ module.exports = {
   Disease,
   Patmaster,
   Disease_info,
-  vs_patmaster_project
+  vs_patmaster_project,
+  Promain_patmaster_vs
 };

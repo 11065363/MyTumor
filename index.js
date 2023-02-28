@@ -21,6 +21,8 @@ const {
   treatment_require,
   Disease,
   Patmaster,
+  Promain_patmaster_vs,
+  vs_patmaster_project,
   Disease_info
 } = require("./db");
 const {
@@ -109,7 +111,7 @@ app.post("/login", async (req, res) => {
 //项目表单
 app.get("/projectform", async (req, res) => {
   if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
-    let mylimit = 3;
+    let mylimit = 15;
     let myoffset = 0;
     var t = 1; //当前页
     if (req.query.limit != undefined) {
@@ -119,7 +121,8 @@ app.get("/projectform", async (req, res) => {
       myoffset = parseInt(req.query.offset); //获取每页数量
       t = parseInt(myoffset / mylimit) + 1;
     }
-    const personInfoList = await Promain.findAll({
+    //const personInfoList = await Promain.findAll({
+    const {count,rows} = await Promain.findAndCountAll({
       limit: mylimit,
       offset: myoffset,
       order: [
@@ -127,9 +130,9 @@ app.get("/projectform", async (req, res) => {
       ],
     });
     res.render('projectform', {
-      personInfoList: personInfoList,
+      personInfoList: rows,
       currentpage: t,
-      totalCount: 10
+      totalCount: count
     })
   } else {
     res.redirect('login');
@@ -230,7 +233,7 @@ app.post("/api/test2", async (req, res) => {
   res.send(data.username);
 });
 
-// 小程序调用，获取微信 Open ID
+// 小程序调用，获取微信 Open ID////////////////////////目前没成功
 app.get("/api/wx_openid", async (req, res) => {
   if (req.headers["x-wx-source"]) {
     res.send(req.headers["x-wx-openid"]);
@@ -246,7 +249,7 @@ app.get("/api/wxouth", async (req, res) => {
   console.log(data)
   var appid = "wx69571ae610f52ccd";
   var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
-  var js_code = "0717Lw00060QvP1UfX200Q4CF337Lw0i";
+  var js_code = "041S5YZv37mnc03YRT3w3np5Cv2S5YZ5";//来自小程序
   //var grant_type=" authorization_code";
   const result = await call({
     url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
@@ -325,9 +328,9 @@ app.get("/api/prolistform", async (req, res) => {
 });
 
 
-//项目表单
+//项目表单,传给小程序
 app.post("/api/prolistform", async (req, res) => {
-  let mylimit = 3;
+  let mylimit = 10;
   let myoffset = 0;
   var where = new Object();
   var t = 1; //当前页
@@ -374,12 +377,38 @@ app.post("/api/prolistform", async (req, res) => {
 
 });
 
+//修改患者-项目VS表
+app.post("/api/updatepromain_patmaster_vs", async (req, res) => {
+  //console.log("ssee");
+  var where = new Object();
+  var data = JSON.stringify(req.body)
+  console.log(data)
+  await Promain_patmaster_vs.update({status:req.body.status},{
+    where:{vsid:req.body.vsid}
+  });
+  res.send({
+    code: 0,
+    data: "",
+  });
+});
+
 //插入患者信息
 app.post("/api/insertpatient", async (req, res) => {
   //console.log("ssee");
-  var data = JSON.stringify(req.body)
-  console.log(data)
-  var tmp= await Patmaster.create(req.body);
+  var resultdata=req.body;
+  var appid = "wx69571ae610f52ccd";
+  var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
+  var js_code = req.body.openid;//来自小程序
+  //var grant_type=" authorization_code";
+  const result = await call({
+    url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
+    method: 'GET',
+  })
+  console.log(result);
+  var ttt=eval ("(" + result + ")");
+  resultdata.openid=ttt.openid;
+  console.log("*******************");
+  var tmp= await Patmaster.create(resultdata);
   console.log(tmp)
   res.send({
     code: 0,
@@ -395,6 +424,39 @@ app.get("/api/exam_n", async (req, res) => {
     data: result,
   });
 });
+
+// 获取患者-项目信息表
+app.get("/api/vs_patmaster_project", async (req, res) => {
+  var where=new Object();
+  var canshu1=''
+  var cansh2=''
+  let status = req.query.data;
+  if(status==0)//未审核
+  {
+    canshu1=Op.is;
+    cansh2=null
+  }
+  if(status==1)//已审核
+  {
+    canshu1=Op.not;
+    cansh2=null
+  }
+  tmp=null;
+  tmp2=Op.is
+  const result = await vs_patmaster_project.findAll({
+    where:{
+      status:{
+        [canshu1]: cansh2 
+      }
+    }
+  });;
+  res.send({
+    code: 0,
+    data: result,
+  });
+});
+
+
 
 app.post("/api/formdata", async (req, res) => {
   //console.log("ssee");

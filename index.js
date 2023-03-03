@@ -467,9 +467,9 @@ app.get("/api/getopenid", async (req, res) => {
   //var js_code = '051hzdGa1RNYSE0R1KGa1hpxqR0hzdGb'; //来自小程序
   const result = await call({
     url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
-    method: 'GET',
+    method: 'POST',
   })
-  console.log(result);
+  //console.log(result);
   var ttt = eval("(" + result + ")");
   var tmpopenid = ttt.openid;
   if (tmpopenid != undefined) {

@@ -28,6 +28,9 @@ const {
 const {
   download
 } = require("express/lib/response");
+const {
+  nextTick
+} = require("process");
 
 const logger = morgan("tiny");
 
@@ -52,6 +55,7 @@ app.use(express.json());
 app.use(cors());
 app.use(logger);
 
+app.use(express.static(path.join(__dirname, './public')));
 
 // 使用 session 中间件
 app.use(session({
@@ -62,6 +66,27 @@ app.use(session({
     maxAge: 1000 * 6000 * 3, // 设置 session 的有效时间，单位毫秒
   },
 }));
+app.use('/', function (req, res, next) { ///静态文件
+  //console.log("=======================================");
+  //console.log("请求路径："+req.url);
+  var filename = req.url.split('/')[req.url.split('/').length - 1];
+  var suffix = req.url.split('.')[req.url.split('.').length - 1];
+  //console.log("文件名：", filename);
+  //console.log(suffix);
+  //if(suffix in ['gif', 'jpeg', 'jpg', 'png']){
+  if (suffix == 'jpg') {
+    //console.log("iiii");
+    res.writeHead(200, {
+      'Content-Type': 'image/' + suffix
+    });
+    res.end(get_file_content(path.join(__dirname, 'public', 'imgs', filename)));
+  }
+  next();
+});
+
+function get_file_content(filepath) {
+  return fs.readFileSync(filepath);
+}
 
 // //如果是wxapi不校验是否登录，如果是网页需要校验是否登录。
 // app.use(function (req, res, next) {
@@ -122,7 +147,10 @@ app.get("/projectform", async (req, res) => {
       t = parseInt(myoffset / mylimit) + 1;
     }
     //const personInfoList = await Promain.findAll({
-    const {count,rows} = await Promain.findAndCountAll({
+    const {
+      count,
+      rows
+    } = await Promain.findAndCountAll({
       limit: mylimit,
       offset: myoffset,
       order: [
@@ -141,10 +169,19 @@ app.get("/projectform", async (req, res) => {
 });
 
 
-//患者表单
+//患者-项目表单
 app.get("/patient", async (req, res) => {
   if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
     res.render('patient')
+  } else {
+    res.redirect('login');
+  }
+});
+
+//患者表单
+app.get("/patinfo", async (req, res) => {
+  if (req.session.userName) { //判断session 状态，如果有效，则返回主页，否则转到登录页面
+    res.render('patinfo')
   } else {
     res.redirect('login');
   }
@@ -249,7 +286,7 @@ app.get("/api/wxouth", async (req, res) => {
   console.log(data)
   var appid = "wx69571ae610f52ccd";
   var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
-  var js_code = "041S5YZv37mnc03YRT3w3np5Cv2S5YZ5";//来自小程序
+  var js_code = "041S5YZv37mnc03YRT3w3np5Cv2S5YZ5"; //来自小程序
   //var grant_type=" authorization_code";
   const result = await call({
     url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
@@ -269,13 +306,13 @@ app.get("/api/sendmessage", async (req, res) => {
   var appid = "wx69571ae610f52ccd";
   var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
   const tokenresult = await call({
-    url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='+appid+'&secret='+secret,
+    url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' + appid + '&secret=' + secret,
     method: 'GET',
   })
-  var ttt=eval ("(" + tokenresult + ")");
-  
+  var ttt = eval("(" + tokenresult + ")");
+
   const result = await call({
-    url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token='+ttt.access_token,
+    url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=' + ttt.access_token,
     method: 'POST',
     data: {
       "touser": "ordPd4tUBZLGxowWznQwYaA9GPc0",
@@ -383,8 +420,12 @@ app.post("/api/updatepromain_patmaster_vs", async (req, res) => {
   var where = new Object();
   var data = JSON.stringify(req.body)
   console.log(data)
-  await Promain_patmaster_vs.update({status:req.body.status},{
-    where:{vsid:req.body.vsid}
+  await Promain_patmaster_vs.update({
+    status: req.body.status
+  }, {
+    where: {
+      vsid: req.body.vsid
+    }
   });
   res.send({
     code: 0,
@@ -395,25 +436,69 @@ app.post("/api/updatepromain_patmaster_vs", async (req, res) => {
 //插入患者信息
 app.post("/api/insertpatient", async (req, res) => {
   //console.log("ssee");
-  var resultdata=req.body;
+  var resultdata = req.body;
   var appid = "wx69571ae610f52ccd";
   var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
-  var js_code = req.body.openid;//来自小程序
+  var js_code = req.body.openid; //来自小程序
   //var grant_type=" authorization_code";
   const result = await call({
     url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
     method: 'GET',
   })
   console.log(result);
-  var ttt=eval ("(" + result + ")");
-  resultdata.openid=ttt.openid;
+  var ttt = eval("(" + result + ")");
+  resultdata.openid = ttt.openid;
   console.log("*******************");
-  var tmp= await Patmaster.create(resultdata);
+  var tmp = await Patmaster.create(resultdata);
   console.log(tmp)
   res.send({
     code: 0,
     data: "",
   });
+});
+
+//通过jscode获取openid的状态返回
+app.get("/api/getopenid", async (req, res) => {
+  //console.log("ssee");
+  var resultdata = req.body;
+  var appid = "wx69571ae610f52ccd";
+  var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
+  var js_code = req.body.openid;//来自小程序
+  //var js_code = '051hzdGa1RNYSE0R1KGa1hpxqR0hzdGb'; //来自小程序
+  const result = await call({
+    url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
+    method: 'GET',
+  })
+  console.log(result);
+  var ttt = eval("(" + result + ")");
+  var tmpopenid = ttt.openid;
+  if (tmpopenid != undefined) {
+    console.log("*******************");
+    var result2 = await Patmaster.findAll({
+      where: {
+        openid: tmpopenid
+      }
+    });
+    //var r = JSON.parse(result2);
+    console.log(result2.length);
+    if (result2.length > 0) {
+      res.send({
+        code: 0,
+        data: 1,//老用户
+      });
+    } else {
+      res.send({
+        code: 0,
+        data: 0,//新用户
+      });
+    }
+
+  } else {
+    res.send({
+      code: 0,
+      data: 99, //发生错误
+    });
+  }
 });
 
 // 获取患者信息表
@@ -427,26 +512,26 @@ app.get("/api/exam_n", async (req, res) => {
 
 // 获取患者-项目信息表
 app.get("/api/vs_patmaster_project", async (req, res) => {
-  var where=new Object();
-  var canshu1=''
-  var cansh2=''
+  var where = new Object();
+  var canshu1 = ''
+  var cansh2 = ''
   let status = req.query.data;
-  if(status==0)//未审核
+  if (status == 0) //未审核
   {
-    canshu1=Op.is;
-    cansh2=null
+    canshu1 = Op.is;
+    cansh2 = null
   }
-  if(status==1)//已审核
+  if (status == 1) //已审核
   {
-    canshu1=Op.not;
-    cansh2=null
+    canshu1 = Op.not;
+    cansh2 = null
   }
-  tmp=null;
-  tmp2=Op.is
+  tmp = null;
+  tmp2 = Op.is
   const result = await vs_patmaster_project.findAll({
-    where:{
-      status:{
-        [canshu1]: cansh2 
+    where: {
+      status: {
+        [canshu1]: cansh2
       }
     }
   });;

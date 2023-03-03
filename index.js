@@ -458,7 +458,7 @@ app.post("/api/insertpatient", async (req, res) => {
 });
 
 //通过jscode获取openid的状态返回
-app.get("/api/getopenid", async (req, res) => {
+app.post("/api/getopenid", async (req, res) => {
   //console.log("ssee");
   var resultdata = req.body;
   var appid = "wx69571ae610f52ccd";
@@ -467,7 +467,7 @@ app.get("/api/getopenid", async (req, res) => {
   //var js_code = '051hzdGa1RNYSE0R1KGa1hpxqR0hzdGb'; //来自小程序
   const result = await call({
     url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
-    method: 'POST',
+    method: 'GET',
   })
   //console.log(result);
   var ttt = eval("(" + result + ")");

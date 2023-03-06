@@ -464,7 +464,7 @@ app.post("/api/getopenid", async (req, res) => {
   var appid = "wx69571ae610f52ccd";
   var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
   var js_code = req.body.openid;//来自小程序
-  //var js_code = '051hzdGa1RNYSE0R1KGa1hpxqR0hzdGb'; //来自小程序
+  //var js_code = '0811ElFa1ZeNTE0RPpJa11ZQim41ElFE'; //来自小程序
   const result = await call({
     url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
     method: 'GET',
@@ -479,12 +479,13 @@ app.post("/api/getopenid", async (req, res) => {
         openid: tmpopenid
       }
     });
-    //var r = JSON.parse(result2);
-    console.log(result2.length);
+    //console.log(result2);
+    //console.log("kkk");
     if (result2.length > 0) {
       res.send({
         code: 0,
         data: 1,//老用户
+        content:result2
       });
     } else {
       res.send({

@@ -513,7 +513,6 @@ app.get("/api/exam_n", async (req, res) => {
 
 // 获取患者-项目信息表
 app.get("/api/vs_patmaster_project", async (req, res) => {
-  var where = new Object();
   var canshu1 = ''
   var cansh2 = ''
   let status = req.query.data;
@@ -535,13 +534,26 @@ app.get("/api/vs_patmaster_project", async (req, res) => {
         [canshu1]: cansh2
       }
     }
-  });;
+  });
   res.send({
     code: 0,
     data: result,
   });
 });
 
+// 根据id获取患者-项目信息表
+app.post("/api/vs_patmaster_project_id", async (req, res) => {
+  var id= req.body.id
+  const result = await vs_patmaster_project.findAll({
+    where: {
+      id:id
+    }
+  });
+  res.send({
+    code: 0,
+    data: result,
+  });
+});
 
 
 app.post("/api/formdata", async (req, res) => {

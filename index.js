@@ -554,7 +554,7 @@ app.post("/api/vs_patmaster_project_id", async (req, res) => {
     data: result,
   });
 });
-/api/getpatient_id
+
 
 //通过id获得患者的基本信息
 app.post("/api/getpatient_id", async (req, res) => {

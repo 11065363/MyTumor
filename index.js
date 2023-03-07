@@ -554,6 +554,21 @@ app.post("/api/vs_patmaster_project_id", async (req, res) => {
     data: result,
   });
 });
+/api/getpatient_id
+
+//通过id获得患者的基本信息
+app.post("/api/getpatient_id", async (req, res) => {
+  var id= req.body.id
+  const result = await Patmaster.findAll({
+    where: {
+      id:id
+    }
+  });
+  res.send({
+    code: 0,
+    data: result,
+  });
+});
 
 
 app.post("/api/formdata", async (req, res) => {

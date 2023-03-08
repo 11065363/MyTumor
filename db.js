@@ -271,7 +271,7 @@ const vs_patmaster_project = sequelize.define('vs_patmaster_project', {
     type:DataTypes.STRING,
   },
   status:{
-    type:DataTypes.int,
+    type:DataTypes.INTEGER,
   },
 
 

@@ -298,6 +298,7 @@ app.get("/api/wxouth", async (req, res) => {
 });
 
 app.get("/api/sendmessage", async (req, res) => {
+  let myopenid= "ordPd4j3MByVeVLrwpmY80pMQTm8";//req.query.openid;
   var canshu = new Object();
   canshu.name1 = "a";
   canshu.phrase3 = "b";
@@ -315,20 +316,20 @@ app.get("/api/sendmessage", async (req, res) => {
     url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=' + ttt.access_token,
     method: 'POST',
     data: {
-      "touser": "ordPd4tUBZLGxowWznQwYaA9GPc0",
+      "touser": myopenid,//"ordPd4tUBZLGxowWznQwYaA9GPc0",//openid
       "template_id": "_nBaREKTiD_4K9lGE9m0YQmu6pQmb52FrP6Tkvd-xY4",
       "data": {
         "name1": {
-          value: '我是玖柒后'
+          value: '审核通过'
         },
         "phrase3": {
           value: '通过'
         },
         "thing4": {
-          value: "发送成功！"
+          value: "测试1！"
         },
         "thing6": {
-          value: "发送成功！"
+          value: "测试2"
         }
       },
     }

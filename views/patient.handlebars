@@ -255,9 +255,9 @@
                 })
             });
             $("#testpost").click(function () {
-                $.ajax("/api/insertpatient", {
+                $.ajax("/api/promain_patmaster_vs_find", {
                     method: "post",
-                    data: { "name": "3", "idcard": "0", "address": "1" },
+                    data: { "mainid": 7, "id": 1 },
                 }).done(function (res) {
                     console.log(res);
                 });

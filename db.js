@@ -315,6 +315,9 @@ const Promain_patmaster_vs = sequelize.define("Promain_patmaster_vs", {
   },
   status: {
     type: DataTypes.INTEGER,
+  },
+  info: {
+    type: DataTypes.STRING,
   }
 },{
   //timestamps: false, // 不要默认时间戳 数据库没有时间戳字段时，设置为false，否则报错  SequelizeDatabaseError: Unknown column 'createdAt' in 'field list'

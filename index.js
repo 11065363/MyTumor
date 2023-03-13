@@ -433,6 +433,38 @@ app.post("/api/updatepromain_patmaster_vs", async (req, res) => {
   });
 });
 
+//查看患者-项目VS表
+app.post("/api/promain_patmaster_vs_find", async (req, res) => {
+  //console.log("ssee");
+  const result = await Promain_patmaster_vs.findAll({
+    where: {
+      mainid: req.body.mainid,
+      id: req.body.id
+    }
+  });
+  console.log(result.length); 
+  if (result.length > 0) {
+    res.send({
+      code: 0,
+      data: "已经申请过，有id和mainid",
+    });
+  } else {
+    res.send({
+      code: 1,
+      data: "未申请过",
+    });
+  }
+});
+
+//插入患者-项目VS表
+app.post("/api/vs_patmaster_project_insert", async (req, res) => {
+  await Promain_patmaster_vs.create(req.body);
+  res.send({
+    code: 0,
+    data: "",
+  });
+});
+
 //插入患者信息
 app.post("/api/insertpatient", async (req, res) => {
   //console.log("ssee");
@@ -463,7 +495,7 @@ app.post("/api/getopenid", async (req, res) => {
   var resultdata = req.body;
   var appid = "wx69571ae610f52ccd";
   var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
-  var js_code = req.body.openid;//来自小程序
+  var js_code = req.body.openid; //来自小程序
   //var js_code = '0811ElFa1ZeNTE0RPpJa11ZQim41ElFE'; //来自小程序
   const result = await call({
     url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code',
@@ -484,13 +516,13 @@ app.post("/api/getopenid", async (req, res) => {
     if (result2.length > 0) {
       res.send({
         code: 0,
-        data: 1,//老用户
-        content:result2
+        data: 1, //老用户
+        content: result2
       });
     } else {
       res.send({
         code: 0,
-        data: 0,//新用户
+        data: 0, //新用户
       });
     }
 
@@ -543,10 +575,10 @@ app.get("/api/vs_patmaster_project", async (req, res) => {
 
 // 根据id获取患者-项目信息表
 app.post("/api/vs_patmaster_project_id", async (req, res) => {
-  var id= req.body.id
+  var id = req.body.id
   const result = await vs_patmaster_project.findAll({
     where: {
-      id:id
+      id: id
     }
   });
   res.send({
@@ -558,10 +590,10 @@ app.post("/api/vs_patmaster_project_id", async (req, res) => {
 
 //通过id获得患者的基本信息
 app.post("/api/getpatient_id", async (req, res) => {
-  var id= req.body.id
+  var id = req.body.id
   const result = await Patmaster.findAll({
     where: {
-      id:id
+      id: id
     }
   });
   res.send({

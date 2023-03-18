@@ -443,8 +443,11 @@ app.post("/api/prolistformsearch", async (req, res) => {
   }
   
   //where.mainid=7;
-
-  const result = await Promain.findAll({
+  const {
+    count,
+    rows
+  } = await Promain.findAndCountAll({
+  //const result = await Promain.findAll({
     limit: mylimit,
     offset: myoffset,
     //where,
@@ -459,6 +462,16 @@ app.post("/api/prolistformsearch", async (req, res) => {
           medicine: {
             [Op.like]: '%'+likename+'%'
           }
+        },
+        {
+          mainid: {
+            [Op.like]: '%'+likename+'%'
+          }
+        },
+        {
+          indication: {
+            [Op.like]: '%'+likename+'%'
+          }
         }
       ]
     },
@@ -470,7 +483,8 @@ app.post("/api/prolistformsearch", async (req, res) => {
   });
   res.send({
     code: 0,
-    data: result,
+    data: rows,
+    count:count
   })
 
 });

@@ -339,9 +339,9 @@ app.get("/api/sendmessage", async (req, res) => {
 
 });
 
-//项目表单
+//项目表单,暂时不用了
 app.get("/api/prolistform", async (req, res) => {
-  let mylimit = 3;
+  let mylimit = 10;
   let myoffset = 0;
   var t = 1; //当前页
   if (req.query.limit != undefined) {
@@ -371,6 +371,7 @@ app.post("/api/prolistform", async (req, res) => {
   let mylimit = 10;
   let myoffset = 0;
   var where = new Object();
+  var newwhere="";
   var t = 1; //当前页
   console.log(req.body);
   if (req.body.limit != undefined) {
@@ -398,15 +399,74 @@ app.post("/api/prolistform", async (req, res) => {
   if (req.body.region_info_id != undefined) {
     where.region_info_id = req.body.region_info_id
   }
-  //where.mainid=7;
 
-  const result = await Promain.findAll({
+  //where.mainid=7;
+  const {
+    count,
+    rows
+  } = await Promain.findAndCountAll({
+  //const result = await Promain.findAll({
     limit: mylimit,
     offset: myoffset,
     where,
     order: [
       ['mainid', 'DESC']
     ],
+    
+  });
+  res.send({
+    code: 0,
+    data: rows,
+    count:count
+  })
+
+});
+
+//项目表单2,传给小程序,最上面的搜索
+app.post("/api/prolistformsearch", async (req, res) => {
+  let mylimit = 10;
+  let myoffset = 0;
+  var where = new Object();
+  var likename="";
+  var t = 1; //当前页
+  console.log(req.body);
+  if (req.body.limit != undefined) {
+    mylimit = parseInt(req.body.limit); //获取每页数量
+  }
+  if (req.body.offset != undefined) {
+    myoffset = parseInt(req.body.offset); //获取每页数量
+    t = parseInt(myoffset / mylimit) + 1;
+  }
+  if (req.body.infolike != undefined) {
+    //where.gene_id = req.body.gene_id
+    likename=req.body.infolike;
+  }
+  
+  //where.mainid=7;
+
+  const result = await Promain.findAll({
+    limit: mylimit,
+    offset: myoffset,
+    //where,
+    where:{
+      [Op.or]: [
+        {
+          pro_name: {
+            [Op.like]: '%'+likename+'%'
+          }
+        },
+        {
+          medicine: {
+            [Op.like]: '%'+likename+'%'
+          }
+        }
+      ]
+    },
+    
+    order: [
+      ['mainid', 'DESC']
+    ],
+    
   });
   res.send({
     code: 0,
@@ -414,7 +474,6 @@ app.post("/api/prolistform", async (req, res) => {
   })
 
 });
-
 //修改患者-项目VS表
 app.post("/api/updatepromain_patmaster_vs", async (req, res) => {
   //console.log("ssee");

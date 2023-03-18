@@ -255,9 +255,9 @@
                 })
             });
             $("#testpost").click(function () {
-                $.ajax("/api/promain_patmaster_vs_find", {
+                $.ajax("/api/prolistformsearch", {
                     method: "post",
-                    data: { "mainid": 7, "id": 1 },
+                    data: { "infolike": '尼'},
                 }).done(function (res) {
                     console.log(res);
                 });

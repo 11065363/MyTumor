@@ -23,7 +23,8 @@ const {
   Patmaster,
   Promain_patmaster_vs,
   vs_patmaster_project,
-  Disease_info
+  Disease_info,
+  Promain_view
 } = require("./db");
 const {
   download

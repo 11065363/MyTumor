@@ -195,6 +195,9 @@ const Promain_view = sequelize.define("Promain_view", {
   region_info_id: {
     type: DataTypes.INTEGER,
   },
+  pro_status: {
+    type: DataTypes.INTEGER,//null未操作，99项目完结
+  },
 },{
   //timestamps: false, // 不要默认时间戳 数据库没有时间戳字段时，设置为false，否则报错  SequelizeDatabaseError: Unknown column 'createdAt' in 'field list'
   freezeTableName: true 

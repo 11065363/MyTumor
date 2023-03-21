@@ -119,6 +119,88 @@ const Promain = sequelize.define("Promain", {
   freezeTableName: true 
 });
 
+
+// 定义数据模型Promain
+const Promain_view = sequelize.define("Promain_view", {
+  mainid:{
+    type:DataTypes.INTEGER,
+    primaryKey:true
+  },
+  title: {
+    type: DataTypes.STRING,
+  },
+  disease_name: {
+    type: DataTypes.STRING,
+  },
+  pro_name: {
+    type: DataTypes.STRING,
+  },
+  test_stage: {
+    type: DataTypes.STRING,
+  },
+  medicine: {
+    type: DataTypes.STRING,
+  },
+  indication: {
+    type: DataTypes.STRING,
+  },
+  test_name: {
+    type: DataTypes.STRING,
+  },
+  Deptname: {
+    type: DataTypes.STRING,
+  },
+  medicine_introduce: {
+    type: DataTypes.STRING,
+  },
+  paper: {
+    type: DataTypes.STRING,
+  },
+  medicine_group: {
+    type: DataTypes.STRING,
+  },
+  drug_group: {
+    type: DataTypes.STRING,
+  },
+  medicine_programme: {
+    type: DataTypes.STRING,
+  },
+  briefly_in: {
+    type: DataTypes.STRING,
+  },
+  detail_in: {
+    type: DataTypes.STRING,
+  },
+  briefly_out: {
+    type: DataTypes.STRING,
+  },
+  detail_out: {
+    type: DataTypes.STRING,
+  },
+  gene_id: {
+    type: DataTypes.STRING,
+  },
+  treate_id: {
+    type: DataTypes.STRING,
+  },
+  disease_id: {
+    type: DataTypes.INTEGER,
+  },
+  disease_info_id: {
+    type: DataTypes.INTEGER,
+  },
+  region_id: {
+    type: DataTypes.INTEGER,
+  },
+  region_info_id: {
+    type: DataTypes.INTEGER,
+  },
+},{
+  //timestamps: false, // 不要默认时间戳 数据库没有时间戳字段时，设置为false，否则报错  SequelizeDatabaseError: Unknown column 'createdAt' in 'field list'
+  freezeTableName: true 
+});
+
+
 // 定义数据模型region_main
 const region_main = sequelize.define("region_main", {
   regionid:{
@@ -360,5 +442,6 @@ module.exports = {
   Patmaster,
   Disease_info,
   vs_patmaster_project,
-  Promain_patmaster_vs
+  Promain_patmaster_vs,
+  Promain_view
 };

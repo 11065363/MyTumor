@@ -457,7 +457,7 @@ app.post("/api/prolistform", async (req, res) => {
   const {
     count,
     rows
-  } = await Promain.findAndCountAll({
+  } = await Promain_view.findAndCountAll({
   //const result = await Promain.findAll({
     limit: mylimit,
     offset: myoffset,

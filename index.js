@@ -297,8 +297,11 @@ app.get("/api/wxouth", async (req, res) => {
 
 });
 
-app.get("/api/sendmessage", async (req, res) => {
-  let myopenid= "ordPd4j3MByVeVLrwpmY80pMQTm8";//req.query.openid;
+app.post("/api/sendmessage", async (req, res) => {//**********************还需要修改 */
+  let myopenid= req.body.myopenid;//"ordPd4j3MByVeVLrwpmY80pMQTm8";//req.query.openid;
+  let mypro_name=req.body.mypro_name;
+  let myname=req.body.myname;
+  let mystatus=req.body.mystatus;
   var canshu = new Object();
   canshu.name1 = "a";
   canshu.phrase3 = "b";
@@ -319,22 +322,72 @@ app.get("/api/sendmessage", async (req, res) => {
       "touser": myopenid,//"ordPd4tUBZLGxowWznQwYaA9GPc0",//openid
       "template_id": "_nBaREKTiD_4K9lGE9m0YQmu6pQmb52FrP6Tkvd-xY4",
       "data": {
-        "name1": {
-          value: '审核通过'
+        "name1": {//申请人
+          value: myname
         },
-        "phrase3": {
-          value: '通过'
+        "phrase3": {//审核状态
+          value: mystatus
         },
-        "thing4": {
-          value: "测试1！"
+        "thing4": {//审核内容
+          value: mypro_name
         },
         "thing6": {
-          value: "测试2"
+          value: "无"
         }
       },
     }
   })
   console.log(result);
+  //https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code 
+
+});
+
+//2023-03新的下载文件接口，老的暂时不用
+app.post("/api/newdownloadfile", async (req, res) => {
+  var jsonstr=req.body.jsonstr;
+  var jsonObj = eval('(' + jsonstr + ')');
+  var file_list=new Array();
+  
+  for(var i=0;i<jsonObj.length;i++){
+    var obj=new Object();
+    obj.fileid=jsonObj[i];
+    obj.max_age=7200
+    file_list.push(obj);
+  }
+  console.log(file_list);
+
+
+  let myopenid= "ordPd4j3MByVeVLrwpmY80pMQTm8";//req.query.openid;
+  var appid = "wx69571ae610f52ccd";
+  var secret = "cb8eb8069f90cdbdf458c6c2b12820dd";
+  const tokenresult = await call({
+    url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' + appid + '&secret=' + secret,
+    method: 'GET',
+  })
+  var ttt = eval("(" + tokenresult + ")");
+  console.log(ttt);
+
+  const result = await call({
+    url: 'https://api.weixin.qq.com/tcb/batchdownloadfile?access_token=' + ttt.access_token,
+    method: 'POST',
+    data: {
+      //"access_token": ttt.access_token,//"ordPd4tUBZLGxowWznQwYaA9GPc0",//openid
+      "env": "prod-6go1azha6b1ef67a",///云环境id
+      "file_list": file_list,
+      // [
+      //   {
+      //     "fileid":"cloud://prod-6go1azha6b1ef67a.7072-prod-6go1azha6b1ef67a-1306110434/file/example.png",
+      //     "max_age":7200
+      //   }
+      // ],
+    }
+  })
+  // console.log("成功吧")
+   console.log(result);
+  res.send({
+    code: 0,
+    data: result,
+  })
   //https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code 
 
 });

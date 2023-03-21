@@ -14,6 +14,7 @@
                 data-bs-target="#myModal5">新增测试数据</button></h3>
         <button type="button" class="btn btn-primary" id="testup">测试上传</button>
         <button type="button" class="btn btn-primary" id="testdown">测试下载</button>
+        <button type="button" class="btn btn-primary" id="testdown2">测试下载2new</button>
         <button type="button" class="btn btn-primary" id="testpost">测试post</button>
         <button type="button" class="btn btn-primary" id="testpatient">测试患者项目</button>
         <table class="table table-hover table-striped" style=" table-layout: fixed;">
@@ -47,7 +48,7 @@
         </table>
     </div>
     <div id="menu1" class="container tab-pane fade" style="margin-left: 0px;max-width:2000px;"><br>
-         <table class="table table-hover table-striped" style=" table-layout: fixed;">
+        <table class="table table-hover table-striped" style=" table-layout: fixed;">
             <thead class="table-primary">
                 <tr>
                     <th>项目编号</th>
@@ -112,13 +113,42 @@
         </div>
     </div>
 
+    <!--弹出框-->
+    <div class="modal" id="myModalpic">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">资料内容</h4>
+                    {{!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> --}}
+                </div>
+
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <div id="mypic">
+                        {{!-- <a
+                            href="https://7072-prod-6go1azha6b1ef67a-1306110434.tcb.qcloud.la/file/1678800268.png">查看</a>
+                        --}}
+                    </div>
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <!--脚本部分-->
     <script>
         $(document).ready(function () {
-            console.log("dd");
+            //console.log("dd");
             getpatient_n();
             getpatient_n2();
-            
+
             //获取未审核列表
             function getpatient_n() {
                 $.ajax("/api/vs_patmaster_project?data=0", {
@@ -130,7 +160,7 @@
                         for (let i = 0; i < res.data.length; i++) {
                             tmp += `
                             <tr>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].id + `</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].mainid + `</td>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">`+ res.data[i].name + `</td>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].性别 + `</td>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].birth + `</td>
@@ -138,13 +168,14 @@
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].phone + `</td>
                                
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">
-                                    <button type="button" class="btn btn-primary pass" >通过<div style="display:none ;">`+ res.data[i].id + `</div></button>
-                                    <button type="button" class="btn btn-primary nopass" >不通过<div style="display:none ;">`+ res.data[i].id + `</div></button>
+                                    <button type="button" class="btn btn-primary info" data-bs-toggle="modal" 
+                data-bs-target="#myModalpic">资料<div style="display:none ;">`+ res.data[i].vsid + `</div><div class="pic" style="display:none ;">` + res.data[i].info + `</div></button>
+                                    <button type="button" class="btn btn-primary pass" >通过<div style="display:none ;">`+ res.data[i].vsid + `</div><div class="myopenid" style="display:none ;">` + res.data[i].openid + `</div><div class="myname" style="display:none ;">` + res.data[i].name + `</div><div class="mypro_name" style="display:none ;">` + res.data[i].pro_name + `</div></button>
+                                    <button type="button" class="btn btn-primary nopass" >不通过<div style="display:none ;">`+ res.data[i].vsid + `</div><div class="myopenid" style="display:none ;">` + res.data[i].openid + `</div><div class="myname" style="display:none ;">` + res.data[i].name + `</div><div class="mypro_name" style="display:none ;">` + res.data[i].pro_name + `</div></button>
                                 </td>
                             </tr>
                             `;
                         }
-
                         $("#exam_n").html(tmp);
                     }
                 });
@@ -161,7 +192,7 @@
                         for (let i = 0; i < res.data.length; i++) {
                             tmp += `
                             <tr>
-                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].id + `</td>
+                                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].mainid + `</td>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden; ">`+ res.data[i].name + `</td>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].性别 + `</td>
                                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+ res.data[i].birth + `</td>
@@ -182,20 +213,61 @@
             $(document).on("click", ".pass", function () {///api/updatepromain_patmaster_vs
                 var str = "";
                 var vsid = $(this).children().first().text();//vsid
+                var myopenid = $(this).find('.myopenid').text();//
+                var myname = $(this).find('.myname').text();//
+                var mypro_name = $(this).find('.mypro_name').text();//
+                var mystatus = "通过";//
+
                 $.ajax("/api/updatepromain_patmaster_vs", {
                     method: "post",
                     data: { "vsid": vsid, "status": 8 },
                 }).done(function (res) {
                     if (res && res.data !== undefined) {
+                        $.ajax("/api/sendmessage", {//成功后，发送审核通知
+                            method: "post",
+                            data: { "myopenid": myopenid, "myname": myname, "mypro_name": mypro_name, "mystatus": mystatus },
+                        }).done(function (res) {
+                            if (res && res.data !== undefined) {
 
+                            }
+                        });
                     }
                     $('#caozuo1').show();
                     setTimeout(function () {
-                            $('#caozuo1').hide();
-                        }, 400);
+                        $('#caozuo1').hide();
+                    }, 400);
                     getpatient_n();
                     getpatient_n2();
                 });
+
+
+            })
+
+            //点击资料
+            $(document).on("click", ".info", function () {///api/updatepromain_patmaster_vs
+                $("#mypic").html("");
+                var str = "";
+                var tmp = $(this).find(".pic").text();//vsid
+                //console.log(tmp);
+                if (tmp != "" && tmp != null) {
+
+                    //通过图像路径获取图像
+                    $.ajax("/api/newdownloadfile", {
+                        method: "post",
+                        data: { "jsonstr": tmp },
+                    }).done(function (res) {
+                        if (res && res.data !== undefined) {
+                            var jsonObj = $.parseJSON(res.data);
+                            console.log(jsonObj.file_list);
+                            var tmpstr = "";
+                            for (var i = 0; i < jsonObj.file_list.length; i++) {
+                                tmpstr += `<a href="` + jsonObj.file_list[i].download_url + `" target="_blank" style="margin-right:10px;">资料` + (i + 1) + `</a>`
+                            }
+                            $("#mypic").html(tmpstr);
+                        }
+                    });
+                }
+
 
 
             })
@@ -204,13 +276,27 @@
             $(document).on("click", ".nopass", function () {///api/updatepromain_patmaster_vs
                 var str = "";
                 var vsid = $(this).children().first().text();//vsid
+                var myopenid = $(this).find('.myopenid').text();//
+                var myname = $(this).find('.myname').text();//
+                var mypro_name = $(this).find('.mypro_name').text();//
+                var mystatus = "不通过";//
+
                 $.ajax("/api/updatepromain_patmaster_vs", {
                     method: "post",
                     data: { "vsid": vsid, "status": 9 },
                 }).done(function (res) {
                     if (res && res.data !== undefined) {
+                        $.ajax("/api/sendmessage", {//成功后，发送审核通知
+                            method: "post",
+                            data: { "myopenid": myopenid, "myname": myname, "mypro_name": mypro_name, "mystatus": mystatus },
+                        }).done(function (res) {
+                            if (res && res.data !== undefined) {
 
+                            }
+                        });
                     }
+                    getpatient_n();
+                    getpatient_n2();
                 });
 
 
@@ -257,16 +343,25 @@
             $("#testpost").click(function () {
                 $.ajax("/api/prolistformsearch", {
                     method: "post",
-                    data: { "infolike": '尼'},
+                    data: { "infolike": '尼' },
                 }).done(function (res) {
                     console.log(res);
                 });
             });
 
             //下载数据
-            console.log("kk");
             $('#testdown').click(function () {
                 $.ajax("/api/download", {
+                    method: "get",
+                    //data: { "gene_name": gene_name, "message": gene_message },
+                }).done(function (res) {
+                    console.log(res);
+                });
+            });
+
+            //下载数据
+            $('#testdown2').click(function () {
+                $.ajax("/api/newdownloadfile", {
                     method: "get",
                     //data: { "gene_name": gene_name, "message": gene_message },
                 }).done(function (res) {

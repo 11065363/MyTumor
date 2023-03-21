@@ -240,6 +240,9 @@ const vs_patmaster_project = sequelize.define('vs_patmaster_project', {
     type:DataTypes.INTEGER,
     primaryKey:true
   },
+  vsid:{
+    type:DataTypes.INTEGER,
+  },
   name:{
     type:DataTypes.STRING,
   },
@@ -272,6 +275,18 @@ const vs_patmaster_project = sequelize.define('vs_patmaster_project', {
   },
   STATUS:{
     type:DataTypes.INTEGER,
+  },
+  info:{
+    type:DataTypes.STRING,
+  },
+  medicine:{
+    type:DataTypes.STRING,
+  },
+  indication:{
+    type:DataTypes.STRING,
+  },
+  openid:{
+    type:DataTypes.STRING,
   },
   
 

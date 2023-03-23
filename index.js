@@ -169,6 +169,23 @@ app.get("/projectform", async (req, res) => {
 
 });
 
+//修改项目中的pro_status
+app.post("/api/projectform_update", async (req, res) => {
+  const pro_status = req.body.pro_status;
+  const mainid = req.body.mainid;
+  var result= await Promain.update({
+    pro_status: pro_status
+  }, {
+    where: {
+      mainid: mainid
+    }
+  });
+  res.send({
+    code: 0,
+    data: result,
+  })
+});
+
 
 //患者-项目表单
 app.get("/patient", async (req, res) => {
@@ -614,7 +631,7 @@ app.post("/api/insertpatient", async (req, res) => {
   res.send({
     code: 0,
     data: "",
-  });
+  }); 
 });
 
 //通过jscode获取openid的状态返回
@@ -738,6 +755,8 @@ app.post("/api/formdata", async (req, res) => {
   await Promain.create(req.body);
   res.redirect(303, '/projectform');
 });
+
+
 
 // 修改数据
 app.post("/api/formdataupdate", async (req, res) => {

@@ -3,7 +3,9 @@
     <table class="table table-hover table-striped" style=" table-layout: fixed;">
         <thead class="table-primary">
             <tr>
-                <th style="display: none;">Id</th>
+                {{!-- <th style="display: none;">Id</th> --}}
+                <th style="width: 50px;">Id</th>
+                <th style="width: 100px;">项目状态</th>
                 <th>项目名称</th>
                 <th>试验分期</th>
                 <th>药物</th>
@@ -16,8 +18,17 @@
         <tbody>
             {{#each personInfoList}}
             <tr>
-                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;display: none;">{{this.mainid}}
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{this.mainid}}
                 </td>
+                {{!-- handlebars 的if 在判断前会做类型的转换，只有false、" "、0、NaN、null、undefined 这6种情况下为false，其它的都是true。 --}}
+                {{#if this.pro_status}}
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">已完结
+                </td>
+                {{else}}
+                <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">未完结
+                </td>
+                {{/if}}
+
                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{this.pro_name}}</td>
                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{this.test_stage}}</td>
                 <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{{medicine}}</td>
@@ -33,6 +44,8 @@
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">增加</button>
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal2"
                 id="_update">修改</button>
+            <button type="button" class="btn btn-warning" id="changeok">完结项目</button>
+            <button type="button" class="btn btn-info" id="changereset">开启项目</button>
             <button type="button" class="btn btn-danger">删除</button>
         </div>
         <div id="idpage">
@@ -144,6 +157,36 @@
             .siblings().removeClass('selected')
         mainid = $(this).children().first().text();//给修改使用
     });
+
+    //完结项目
+    $('#changeok').click(function () {
+        //alert(mainid);
+        $.ajax("/api/projectform_update", {
+            method: "post",
+            data: { "mainid": mainid, "pro_status": 99 },
+        }).done(function (res) {
+            if (res ) {
+                location.reload();
+               console.log(res);
+            }
+        });
+
+    });
+    //重置开启项目
+    $('#changereset').click(function () {
+        //alert(mainid);
+        $.ajax("/api/projectform_update", {
+            method: "post",
+            data: { "mainid": mainid, "pro_status": 0 },
+        }).done(function (res) {
+            if (res ) {
+                location.reload();
+               console.log(res);
+            }
+        });
+
+    });
+
 
     //修改
     $('#_update').click(function () {

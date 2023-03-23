@@ -376,6 +376,9 @@ const vs_patmaster_project = sequelize.define('vs_patmaster_project', {
   openid:{
     type:DataTypes.STRING,
   },
+  createdAt:{
+    type:DataTypes.DATE
+  }
   
 
 

@@ -747,14 +747,14 @@ app.post("/api/getpatient_id", async (req, res) => {
   });
 });
 
-
+ 
 app.post("/api/formdata", async (req, res) => {
   //console.log("ssee");
   var data = JSON.stringify(req.body)
   console.log(data)
   await Promain.create(req.body);
   res.redirect(303, '/projectform');
-});
+});  
 
 
 
